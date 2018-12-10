@@ -1,0 +1,16 @@
+certifi==2018.11.29
+cffi==1.11.5
+chardet==3.0.4
+colorlog==3.1.4
+idna==2.7
+protobuf==3.6.1
+pycparser==2.19
+PyYAML==3.13
+pyzmq==17.1.2
+requests==2.20.1
+sawtooth-sdk==1.0.5
+sawtooth-signing==1.0.5
+secp256k1==0.13.2
+six==1.11.0
+toml==0.10.0
+urllib3==1.24.1
