@@ -3,15 +3,26 @@ from sawtooth_sdk.processor.exceptions import InvalidTransaction
 OWNER_ADDRESS_LENGTH = 70
 SCANTRUST_ID_LENGTH = 256
 
+# TODO: Item details validation
+# ITEM_NAME_MAX_LENGTH = 128
+# ITEM_COLOR_MAX_LENGTH = 16
+# ITEM_SIZE_MAX_LENGTH = 16
+# ITEM_DESC_MAX_LENGTH = 256
+# ITEM_URL_MAX_LENGTH = 128
+# ITEM_IMG_URL_MAX_LENGTH = 128
+# ITEM_IMG_HASH_LENGTH = 32
+
 
 class FashionPayload:
     def __init__(self, payload):
         try:
-            # The payload is csv utf-8 encoded string
-            scantrust_id, new_owner = payload.decode().split(",")
+            # The payload is utf-8 encoded string
+            scantrust_id, owner_address, item_details = payload.decode().split("\t")
+            # item_name, item_color, item_size, item_description, ... = item_details.split('|')
         except ValueError:
             raise InvalidTransaction("Invalid payload serialization")
 
+        # ScanTrust ID validation
         if not scantrust_id:
             raise InvalidTransaction('ScanTrust ID is required')
 
@@ -23,19 +34,21 @@ class FashionPayload:
         except ValueError:
             raise InvalidTransaction('ScanTrust ID should contain only hexadecimal characters')
 
-        if not new_owner:
-            raise InvalidTransaction('New owner is required')
+        # Owner address validation
+        if not owner_address:
+            raise InvalidTransaction('Owner address is required')
 
-        if len(scantrust_id) != OWNER_ADDRESS_LENGTH:
+        if len(owner_address) != OWNER_ADDRESS_LENGTH:
             raise InvalidTransaction(f'Owner address should consist of {OWNER_ADDRESS_LENGTH} hex characters')
 
         try:
-            int(scantrust_id, 16)
+            int(owner_address, 16)
         except ValueError:
             raise InvalidTransaction('Owner address should contain only hexadecimal characters')
 
         self._scantrust_id = scantrust_id
-        self._new_owner = new_owner
+        self._owner = owner_address
+        self._item_details = item_details
 
     @staticmethod
     def from_bytes(payload):
@@ -47,5 +60,5 @@ class FashionPayload:
 
     @property
     def new_owner(self):
-        return self._new_owner
+        return self._owner
 
