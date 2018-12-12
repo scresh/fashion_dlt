@@ -1,0 +1,13 @@
+[Unit]
+Description=Fashion Transaction Processor
+After=network.target
+
+[Service]
+User=sawtooth
+Group=sawtooth
+EnvironmentFile=-/etc/default/sawtooth-fashion-tp-python
+ExecStart=/usr/bin/fashion-tp-python $SAWTOOTH_FASHION_TP_PYTHON_ARGS
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

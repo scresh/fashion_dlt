@@ -14,7 +14,7 @@
 # -----------------------------------------------------------------------------
 
 __all__ = [
-    'xo_cli',
-    'xo_client',
-    'xo_exceptions'
+    'fashion_cli.py',
+    'fashion_client.py',
+    'fashion_exceptions.py'
 ]
