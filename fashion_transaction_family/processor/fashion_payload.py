@@ -17,7 +17,7 @@ class FashionPayload:
     def __init__(self, payload):
         try:
             # The payload is utf-8 encoded string
-            scantrust_id, owner_address, item_details = payload.decode().split("\t")
+            scantrust_id, owner_address, details = payload.decode().split("\t")
             # item_name, item_color, item_size, item_description, ... = item_details.split('|')
         except ValueError:
             raise InvalidTransaction("Invalid payload serialization")
@@ -47,8 +47,8 @@ class FashionPayload:
             raise InvalidTransaction('Owner address should contain only hexadecimal characters')
 
         self._scantrust_id = scantrust_id
-        self._owner = owner_address
-        self._item_details = item_details
+        self._owner_address = owner_address
+        self._details = details
 
     @staticmethod
     def from_bytes(payload):
@@ -59,6 +59,6 @@ class FashionPayload:
         return self._scantrust_id
 
     @property
-    def new_owner(self):
-        return self._owner
+    def owner_address(self):
+        return self._owner_address
 
