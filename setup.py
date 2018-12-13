@@ -21,8 +21,7 @@ if os.path.exists("/lib/systemd/system"):
 
 setup(
     name='sawtooth-fashion',
-    version=subprocess.check_output(
-        ['/sawtooth-core/bin/get_version']).decode('utf-8').strip(),
+    version='0.1',
     description='Sawtooth Fashion',
     author='scresh',
     url='https://github.com/scresh/fashion_dlt',
