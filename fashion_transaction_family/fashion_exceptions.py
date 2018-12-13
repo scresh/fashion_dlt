@@ -1,0 +1,2 @@
+class FashionException(Exception):
+    pass
