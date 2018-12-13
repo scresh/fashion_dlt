@@ -19,7 +19,7 @@ from fashion_transaction_family.processor.config.fashion import \
     merge_fashion_config
 
 
-DISTRIBUTION_NAME = 'fashion_transaction_processor'
+DISTRIBUTION_NAME = 'sawtooth-fashion'
 
 
 def parse_args(args):

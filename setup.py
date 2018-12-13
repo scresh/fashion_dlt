@@ -38,7 +38,6 @@ setup(
     data_files=data_files,
     entry_points={
         'console_scripts': [
-            # TODO: Create CLI
             'fashion = fashion_transaction_family.fashion_cli:main_wrapper',
             'fashion-tp-python = fashion_transaction_family.processor.main:main',
         ]
