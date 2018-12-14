@@ -1,0 +1,1 @@
+FASHION_CLIENT_ARGS=-v -C tcp://localhost:4004

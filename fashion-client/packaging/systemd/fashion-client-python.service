@@ -1,0 +1,13 @@
+[Unit]
+Description=Fashion Client
+After=network.target
+
+[Service]
+User=sawtooth
+Group=sawtooth
+EnvironmentFile=-/etc/default/sawtooth-fashion-client
+ExecStart=/usr/bin/fashion-client $FASHION_CLIENT_ARGS
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
