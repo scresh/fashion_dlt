@@ -6,13 +6,12 @@ FASHION_NAMESPACE = hashlib.sha512('fashion'.encode("utf-8")).hexdigest()[0:6]
 PAYLOADS_SEPARATOR = '\t'
 VALUES_SEPARATOR = '|'
 
-OWNER_LENGTH = 70
+OWNER_LENGTH = 66
 SCANTRUST_ID_LENGTH = 70
 
 
 class FashionItemState:
     def __init__(self, scantrust_id, owner, details):
-        print(scantrust_id, owner, details)
 
         # ScanTrust ID validation
         if not scantrust_id:
