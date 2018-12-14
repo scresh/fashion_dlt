@@ -10,10 +10,10 @@ import pkg_resources
 
 from colorlog import ColoredFormatter
 
-from fashion_transaction_family.fashion_client import FashionClient
-from fashion_transaction_family.fashion_exceptions import FashionException
+from .fashion_client import FashionClient
+from .fashion_exceptions import FashionException
 
-DISTRIBUTION_NAME = 'sawtooth-fashion'
+DISTRIBUTION_NAME = 'fashion-cli'
 
 DEFAULT_URL = 'http://127.0.0.1:8008'
 PAYLOADS_SEPARATOR = '\t'

@@ -17,7 +17,7 @@ from sawtooth_sdk.protobuf.batch_pb2 import BatchList
 from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader
 from sawtooth_sdk.protobuf.batch_pb2 import Batch
 
-from fashion_transaction_family.fashion_exceptions import FashionException
+from .fashion_exceptions import FashionException
 
 VALUES_SEPARATOR = '|'
 
