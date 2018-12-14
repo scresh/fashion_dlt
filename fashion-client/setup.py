@@ -26,22 +26,22 @@ setup(
     url='https://github.com/scresh/fashion_dlt',
     packages=find_packages(),
     install_requires=[
-        'certifi'
-        'cffi'
-        'chardet'
-        'colorlog'
-        'idna'
-        'protobuf'
-        'pycparser'
-        'PyYAML'
-        'pyzmq'
-        'requests'
-        'sawtooth-sdk'
-        'sawtooth-signing'
-        'secp256k1'
-        'six'
-        'toml'
-        'urllib3'
+        'certifi',
+        'cffi',
+        'chardet',
+        'colorlog',
+        'idna',
+        'protobuf',
+        'pycparser',
+        'PyYAML',
+        'pyzmq',
+        'requests',
+        'sawtooth-sdk',
+        'sawtooth-signing',
+        'secp256k1',
+        'six',
+        'toml',
+        'urllib3',
     ],
     data_files=data_files,
     entry_points={

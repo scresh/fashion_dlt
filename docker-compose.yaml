@@ -47,8 +47,10 @@ services:
     entrypoint: sawtooth-rest-api -C tcp://validator:4004 --bind rest-api:8008
 
   fashion-client:
-    image: hyperledger/sawtooth-all:1.0
-    container_name: sawtooth-shell-default
+    build:
+      context: ./fashion-client
+      dockerfile: Dockerfile
+    container_name: fashion-client
     depends_on:
       - rest-api
     entrypoint: "bash -c \"\
