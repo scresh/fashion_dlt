@@ -38,7 +38,7 @@ def load_toml_fashion_config(filename):
             " config file: %s", filename)
         return FashionConfig()
 
-    LOGGER.info("Loading transaction processor information from config: %s",
+    LOGGER.info("Loading transaction fashion-tp information from config: %s",
                 filename)
 
     try:
@@ -46,7 +46,7 @@ def load_toml_fashion_config(filename):
             raw_config = fd.read()
     except IOError as e:
         raise LocalConfigurationError(
-            "Unable to load transaction processor configuration file:"
+            "Unable to load transaction fashion-tp configuration file:"
             " {}".format(str(e)))
 
     toml_config = toml.loads(raw_config)
@@ -54,7 +54,7 @@ def load_toml_fashion_config(filename):
         ['connect'])
     if invalid_keys:
         raise LocalConfigurationError(
-            "Invalid keys in transaction processor config: "
+            "Invalid keys in transaction fashion-tp config: "
             "{}".format(", ".join(sorted(list(invalid_keys)))))
 
     config = FashionConfig(
@@ -71,7 +71,7 @@ def merge_fashion_config(configs):
     (first has highest priority).
 
     Args:
-        config (list of FashionConfigs): The list of fashion configs that
+        configs (list of FashionConfigs): The list of fashion configs that
             must be merged together
 
     Returns:

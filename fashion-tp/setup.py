@@ -1,9 +1,6 @@
 from __future__ import print_function
-
-import os
-import subprocess
-
 from setuptools import setup, find_packages
+import os
 
 conf_dir = "/etc/sawtooth"
 
@@ -13,16 +10,18 @@ data_files = [
 
 if os.path.exists("/etc/default"):
     data_files.append(
-        ('/etc/default', ['packaging/systemd/fashion-tp-python']))
+        ('/etc/default', ['packaging/systemd/fashion-tp-python'])
+    )
 
 if os.path.exists("/lib/systemd/system"):
-    data_files.append(('/lib/systemd/system',
-                       ['packaging/systemd/fashion-tp-python.service']))
+    data_files.append(
+        ('/lib/systemd/system', ['packaging/systemd/fashion-tp-python.service'])
+    )
 
 setup(
-    name='sawtooth-fashion',
-    version='0.1',
-    description='Sawtooth Fashion',
+    name='fashion-tp',
+    version='1.0',
+    description='Fashion Transaction Processor',
     author='scresh',
     url='https://github.com/scresh/fashion_dlt',
     packages=find_packages(),
@@ -37,7 +36,6 @@ setup(
     data_files=data_files,
     entry_points={
         'console_scripts': [
-            'fashion = fashion_transaction_family.fashion_cli:main_wrapper',
-            'fashion-tp-python = fashion_transaction_family.processor.main:main',
+            'fashion-tp = fashion-tp.main:main',
         ]
     })

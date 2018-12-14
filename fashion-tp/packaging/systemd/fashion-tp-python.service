@@ -6,7 +6,7 @@ After=network.target
 User=sawtooth
 Group=sawtooth
 EnvironmentFile=-/etc/default/sawtooth-fashion-tp-python
-ExecStart=/usr/bin/fashion-tp-python $SAWTOOTH_FASHION_TP_PYTHON_ARGS
+ExecStart=/usr/bin/fashion-tp-python $FASHION_TP_ARGS
 Restart=on-failure
 
 [Install]

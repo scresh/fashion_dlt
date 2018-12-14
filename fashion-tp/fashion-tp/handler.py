@@ -3,9 +3,9 @@ import logging
 from sawtooth_sdk.processor.handler import TransactionHandler
 from sawtooth_sdk.processor.exceptions import InvalidTransaction
 
-from fashion_transaction_family.processor.state import FashionItemState
-from fashion_transaction_family.processor.state import FashionDLT
-from fashion_transaction_family.processor.state import FASHION_NAMESPACE
+from .state import FashionItemState
+from .state import FashionDLT
+from .state import FASHION_NAMESPACE
 
 
 LOGGER = logging.getLogger(__name__)

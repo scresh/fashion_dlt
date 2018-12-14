@@ -1,1 +1,1 @@
-SAWTOOTH_FASHION_TP_PYTHON_ARGS=-v -C tcp://localhost:4004
+FASHION_TP_ARGS=-v -C tcp://localhost:4004

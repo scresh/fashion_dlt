@@ -9,17 +9,15 @@ from sawtooth_sdk.processor.log import log_configuration
 from sawtooth_sdk.processor.config import get_log_config
 from sawtooth_sdk.processor.config import get_log_dir
 from sawtooth_sdk.processor.config import get_config_dir
-from fashion_transaction_family.processor.handler import FashionTransactionHandler
-from fashion_transaction_family.processor.config.fashion import FashionConfig
-from fashion_transaction_family.processor.config.fashion import \
-    load_default_fashion_config
-from fashion_transaction_family.processor.config.fashion import \
-    load_toml_fashion_config
-from fashion_transaction_family.processor.config.fashion import \
-    merge_fashion_config
+
+from .handler import FashionTransactionHandler
+from .config import FashionConfig
+from .config import load_default_fashion_config
+from .config import load_toml_fashion_config
+from .config import merge_fashion_config
 
 
-DISTRIBUTION_NAME = 'sawtooth-fashion'
+DISTRIBUTION_NAME = 'fashion-tp'
 
 
 def parse_args(args):
@@ -84,7 +82,7 @@ def main(args=None):
             log_configuration(log_config=log_config)
         else:
             log_dir = get_log_dir()
-            # use the transaction processor zmq identity for filename
+            # use the transaction fashion-tp zmq identity for filename
             log_configuration(
                 log_dir=log_dir,
                 name="fashion-" + str(processor.zmq_id)[2:-1])
