@@ -99,18 +99,15 @@ RUN echo "deb http://repo.sawtooth.me/ubuntu/ci bionic universe" >> /etc/apt/sou
 COPY --from=sawtooth-signing-builder /sawtooth-core/python3-sawtooth-signing*.deb /tmp
 COPY --from=sawtooth-sdk-python-builder /sawtooth-core/sdk/python3-sawtooth-sdk*.deb /tmp
 
-RUN cd / \
- && git clone https://github.com/hyperledger/sawtooth-core.git
 
-RUN cd /sawtooth-core/sdk/examples/ \
+RUN cd / \
  && git clone https://github.com/scresh/fashion_dlt.git \
- && cp -r fashion_dlt/fashion-tp . \
- && rm -rf fashion_dlt
+ && git clone https://github.com/hyperledger/sawtooth-core.git
 
 RUN dpkg -i /tmp/python3-sawtooth-*.deb || true \
  && apt-get -f -y install \
  && /sawtooth-core/bin/protogen \
- && cd /sawtooth-core/sdk/examples/fashion-tp/ \
+ && cd /fashion_dlt/fashion-tp/ \
  && if [ -d "debian" ]; then rm -rf debian; fi \
  && python3 setup.py clean --all \
  && python3 setup.py --command-packages=stdeb.command debianize \

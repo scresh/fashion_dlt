@@ -16,7 +16,7 @@ services:
     container_name: sawtooth-fashion-tp
     depends_on:
       - validator
-    entrypoint: fashion-tp-python -vv -C tcp://validator:4004
+    entrypoint: fashion-tp -vv -C tcp://validator:4004
 
   validator:
     image: hyperledger/sawtooth-validator:1.0
