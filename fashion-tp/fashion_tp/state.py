@@ -12,6 +12,7 @@ SCANTRUST_ID_LENGTH = 70
 
 class FashionItemState:
     def __init__(self, scantrust_id, owner, details):
+        print(scantrust_id, owner, details)
 
         # ScanTrust ID validation
         if not scantrust_id:
