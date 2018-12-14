@@ -36,6 +36,6 @@ setup(
     data_files=data_files,
     entry_points={
         'console_scripts': [
-            'fashion-tp = fashion-tp.main:main',
+            'fashion-tp = fashion_tp.main:main',
         ]
     })
