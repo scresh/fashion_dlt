@@ -126,12 +126,12 @@ RUN apt-get update \
 
 COPY --from=sawtooth-signing-builder /sawtooth-core/python3-sawtooth-signing*.deb /tmp
 COPY --from=sawtooth-sdk-python-builder /sawtooth-core/sdk/python3-sawtooth-sdk*.deb /tmp
-COPY --from=python-fashion-tp-builder /sawtooth-core/sdk/examples/python3-fashion-tp*.deb /tmp
+COPY --from=python-fashion-tp-builder /fashion_dlt/python3-fashion-tp*.deb /tmp
 
 RUN echo "deb http://repo.sawtooth.me/ubuntu/ci bionic universe" >> /etc/apt/sources.list \
  && (apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 8AA7AF1F1091A5FD \
  || apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 8AA7AF1F1091A5FD) \
  && apt-get update \
- && dpkg -i /tmp/python3-sawtooth-*.deb || true \
+ && dpkg -i /tmp/python3-*.deb || true \
  && apt-get -f -y install
 # ----------------------------------------------------------------------------------------------------------------------
