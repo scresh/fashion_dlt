@@ -103,14 +103,14 @@ RUN cd / \
  && git clone https://github.com/hyperledger/sawtooth-core.git
 
 RUN cd /sawtooth-core/sdk/examples/ \
- && git clone https://github.com/scresh/fashion_dlt.git
-
-RUN cd /
+ && git clone https://github.com/scresh/fashion_dlt.git \
+ && cp -r fashion_dlt/fashion-tp . \
+ && rm -rf fashion_dlt
 
 RUN dpkg -i /tmp/python3-sawtooth-*.deb || true \
  && apt-get -f -y install \
  && /sawtooth-core/bin/protogen \
- && cd /sawtooth-core/sdk/examples/fashion_dlt/ \
+ && cd /sawtooth-core/sdk/examples/fashion-tp/ \
  && if [ -d "debian" ]; then rm -rf debian; fi \
  && python3 setup.py clean --all \
  && python3 setup.py --command-packages=stdeb.command debianize \
