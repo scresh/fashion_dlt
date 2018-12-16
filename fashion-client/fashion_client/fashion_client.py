@@ -22,7 +22,7 @@ from .fashion_exceptions import FashionException
 
 
 def _sha512(data):
-    return hashlib.sha512(data).hexdigest()
+    return hashlib.sha512(data.encode()).hexdigest()
 
 
 class FashionClient:
