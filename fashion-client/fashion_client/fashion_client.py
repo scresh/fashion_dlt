@@ -136,7 +136,7 @@ class FashionClient:
         headers = {}
         if auth_user is not None:
             auth_string = "{}:{}".format(auth_user, auth_password)
-            b64_string = b64encode(auth_string.encode()).decode()
+            b64_string = b64encode(auth_string)
             auth_header = 'Basic {}'.format(b64_string)
             headers['Authorization'] = auth_header
 
@@ -173,7 +173,7 @@ class FashionClient:
         # Serialization is just a delimited utf-8 encoded string
         payload = json.dumps(
             (scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5)
-        ).decode()
+        )
 
         # Construct the address
         address = self._get_address(scantrust_id)
