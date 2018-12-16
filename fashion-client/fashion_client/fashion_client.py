@@ -173,7 +173,7 @@ class FashionClient:
         # Serialization is just a delimited utf-8 encoded string
         payload = pickle.dumps(
             (scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5)
-        )
+        ).decode()
 
         # Construct the address
         address = self._get_address(scantrust_id)
