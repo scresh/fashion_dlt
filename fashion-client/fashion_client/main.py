@@ -66,10 +66,35 @@ def add_create_parser(subparsers, parent_parser):
         help='unique identifier for the new item')
 
     parser.add_argument(
-        'details',
+        'item_name',
         type=str,
         help='fashion item details')
 
+    parser.add_argument(
+        'item_info',
+        type=str,
+        help='fashion item details')
+
+    parser.add_argument(
+        'item_color',
+        type=str,
+        help='fashion item details')
+
+    parser.add_argument(
+        'item_size',
+        type=str,
+        help='fashion item details')
+
+    parser.add_argument(
+        'item_img',
+        type=str,
+        help='fashion item details')
+
+    parser.add_argument(
+        'item_img_md5',
+        type=str,
+        help='fashion item details')
+    
     parser.add_argument(
         '--url',
         type=str,
