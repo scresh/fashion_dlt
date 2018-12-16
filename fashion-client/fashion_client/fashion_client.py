@@ -22,7 +22,7 @@ from .fashion_exceptions import FashionException
 
 
 def _sha512(data):
-    return hashlib.sha512(data.encode()).hexdigest()
+    return hashlib.sha512(data).hexdigest()
 
 
 class FashionClient:
@@ -185,7 +185,7 @@ class FashionClient:
             inputs=[address],
             outputs=[address],
             dependencies=[],
-            payload_sha512=_sha512(payload),
+            payload_sha512=_sha512(payload.encode()),
             batcher_public_key=self._signer.get_public_key().as_hex(),
             nonce=hex(random.randint(0, 2 ** 64))
         ).SerializeToString()
@@ -194,7 +194,7 @@ class FashionClient:
 
         transaction = Transaction(
             header=header,
-            payload=payload,
+            payload=payload.encode(),
             header_signature=signature
         )
 
