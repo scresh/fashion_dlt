@@ -5,7 +5,7 @@ import time
 import random
 import requests
 import yaml
-import pickle
+import json
 
 from sawtooth_signing import create_context
 from sawtooth_signing import CryptoFactory
@@ -171,7 +171,7 @@ class FashionClient:
                           auth_user=None,
                           auth_password=None):
         # Serialization is just a delimited utf-8 encoded string
-        payload = pickle.dumps(
+        payload = json.dumps(
             (scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5)
         ).decode()
 

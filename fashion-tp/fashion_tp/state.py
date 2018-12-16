@@ -1,7 +1,7 @@
 import hashlib
-import pickle
 import socket
 import configparser
+import json
 from urllib import error
 from urllib import request
 from sawtooth_sdk.processor.exceptions import InternalError
@@ -117,7 +117,7 @@ class FashionItemState:
 
     @property
     def payload(self):
-        return pickle.dumps(
+        return json.dumps(
             (self.scantrust_id, self.owner, self.item_name, self.item_info,
              self.item_color, self.item_size, self.item_img, self.item_img_md5)
         ).decode()
@@ -126,8 +126,8 @@ class FashionItemState:
     def from_payload(payload):
         try:
             scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5 = \
-                pickle.load(payload.encode())
-        except (ValueError, pickle.UnpicklingError):
+                json.loads(payload.encode())
+        except (ValueError, json.JSONDecodeError):
             raise InvalidTransaction('Incorrect payload structure')
 
         return FashionItemState(
@@ -146,7 +146,7 @@ def get_serialized_block(deserialized_block):
     for _, item_state in deserialized_block.items():
         payloads.append(item_state.payload)
 
-    return pickle.dumps(payloads).decode()
+    return json.dumps(payloads).decode()
 
 
 def get_deserialized_block(serialized_block):
@@ -158,7 +158,7 @@ def get_deserialized_block(serialized_block):
     """
     deserialized_block = {}
     try:
-        for payload in pickle.loads(serialized_block.encode()):
+        for payload in json.loads(serialized_block.encode()):
             item = FashionItemState.from_payload(payload)
             deserialized_block[item.scantrust_id] = item
     except ValueError:
