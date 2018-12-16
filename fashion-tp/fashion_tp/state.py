@@ -1,17 +1,24 @@
 import hashlib
+import pickle
+
 from sawtooth_sdk.processor.exceptions import InternalError
 from sawtooth_sdk.processor.exceptions import InvalidTransaction
 
 FASHION_NAMESPACE = hashlib.sha512('fashion'.encode("utf-8")).hexdigest()[0:6]
-PAYLOADS_SEPARATOR = '\t'
-VALUES_SEPARATOR = '|'
 
+# TODO: Store length values in config file
 OWNER_LENGTH = 66
 SCANTRUST_ID_LENGTH = 70
+ITEM_NAME_MAX_LENGTH = 16
+ITEM_INFO_MAX_LENGTH = 256
+ITEM_COLOR_MAX_LENGTH = 8
+ITEM_SIZE_MAX_LENGTH = 8
+ITEM_IMG_MAX_LENGTH = 128
+ITEM_IMG_HASH_LENGTH = 32
 
 
 class FashionItemState:
-    def __init__(self, scantrust_id, owner, details):
+    def __init__(self, scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5):
 
         # ScanTrust ID validation
         if not scantrust_id:
@@ -39,7 +46,13 @@ class FashionItemState:
 
         self._scantrust_id = scantrust_id
         self._owner = owner
-        self._details = details
+
+        self._item_name = item_name
+        self._item_info = item_info
+        self._item_color = item_color
+        self._item_size = item_size
+        self._item_img = item_img
+        self._item_img_md5 = item_img_md5
 
     @property
     def scantrust_id(self):
@@ -50,8 +63,28 @@ class FashionItemState:
         return self._owner
 
     @property
-    def details(self):
-        return self._details
+    def item_name(self):
+        return self._item_name
+
+    @property
+    def item_info(self):
+        return self._item_info
+
+    @property
+    def item_color(self):
+        return self._item_color
+
+    @property
+    def item_size(self):
+        return self._item_size
+
+    @property
+    def item_img(self):
+        return self._item_img
+
+    @property
+    def item_img_md5(self):
+        return self._item_img_md5
 
     @property
     def address(self):
@@ -59,12 +92,15 @@ class FashionItemState:
 
     @property
     def payload(self):
-        return VALUES_SEPARATOR.join((self.scantrust_id, self.owner, self.details))
+        return pickle.dumps(
+            (self.scantrust_id, self.owner, self.item_name, self.item_info,
+             self.item_color, self.item_size, self.item_img, self.item_img_md5)
+        )
 
     @staticmethod
     def from_payload(payload):
-        scantrust_id, owner, details = payload.decode().split(VALUES_SEPARATOR)
-        return FashionItemState(scantrust_id, owner, details)
+        scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5 = pickle.load(payload)
+        return FashionItemState(scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5)
 
 
 def get_serialized_block(deserialized_block):
@@ -78,7 +114,7 @@ def get_serialized_block(deserialized_block):
     for _, item_state in deserialized_block.items():
         payloads.append(item_state.payload)
 
-    return PAYLOADS_SEPARATOR.join(sorted(payloads)).encode()
+    return pickle.dumps(payloads)
 
 
 def get_deserialized_block(serialized_block):
@@ -90,8 +126,8 @@ def get_deserialized_block(serialized_block):
     """
     deserialized_block = {}
     try:
-        for payload in serialized_block.decode().split(PAYLOADS_SEPARATOR):
-            item = FashionItemState.from_payload(payload.encode())
+        for payload in pickle.loads(serialized_block):
+            item = FashionItemState.from_payload(payload)
             deserialized_block[item.scantrust_id] = item
     except ValueError:
         raise InternalError("Failed to deserialize item data")

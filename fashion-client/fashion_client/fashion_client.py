@@ -5,6 +5,7 @@ import time
 import random
 import requests
 import yaml
+import pickle
 
 from sawtooth_signing import create_context
 from sawtooth_signing import CryptoFactory
@@ -18,8 +19,6 @@ from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader
 from sawtooth_sdk.protobuf.batch_pb2 import Batch
 
 from .fashion_exceptions import FashionException
-
-VALUES_SEPARATOR = '|'
 
 
 def _sha512(data):
@@ -52,11 +51,12 @@ class FashionClient:
         self._signer = CryptoFactory(create_context('secp256k1')) \
             .new_signer(private_key)
 
-    def create_item(self, scantrust_id, details, wait=None, auth_user=None, auth_password=None):
+    def create_item(self, scantrust_id, item_name, item_info, item_color, item_size, item_img, item_img_md5,
+                    wait=None, auth_user=None, auth_password=None):
         return self._send_fashion_txn(
             scantrust_id,
             self._signer.get_public_key().as_hex(),
-            details,
+            item_name, item_info, item_color, item_size, item_img, item_img_md5,
             wait=wait,
             auth_user=auth_user,
             auth_password=auth_password)
@@ -65,7 +65,7 @@ class FashionClient:
         return self._send_fashion_txn(
             scantrust_id,
             recipient,
-            '',
+            '', '', '', '', '', '',
             wait=wait,
             auth_user=auth_user,
             auth_password=auth_password)
@@ -166,14 +166,14 @@ class FashionClient:
         return result.text
 
     def _send_fashion_txn(self,
-                          scantrust_id,
-                          owner,
-                          details,
+                          scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5,
                           wait=None,
                           auth_user=None,
                           auth_password=None):
         # Serialization is just a delimited utf-8 encoded string
-        payload = VALUES_SEPARATOR.join((scantrust_id, owner, details)).encode()
+        payload = pickle.dumps(
+            (scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5)
+        )
 
         # Construct the address
         address = self._get_address(scantrust_id)

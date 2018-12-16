@@ -16,8 +16,6 @@ from .fashion_exceptions import FashionException
 DISTRIBUTION_NAME = 'fashion-cli'
 
 DEFAULT_URL = 'http://127.0.0.1:8008'
-PAYLOADS_SEPARATOR = '\t'
-VALUES_SEPARATOR = '|'
 
 
 def create_console_handler(verbose_level):
@@ -58,7 +56,7 @@ def add_create_parser(subparsers, parent_parser):
         'create',
         help='Creates a new fashion item',
         description='Sends a transaction to create a fashion item with the '
-                    'identifier <scantrust_id> and <details>. This transaction will '
+                    'identifier <scantrust_id> and <iteam>. This transaction will '
                     'fail if the specified item already exists.',
         parents=[parent_parser])
 
@@ -351,7 +349,12 @@ def create_parser(prog_name):
 
 def do_create(args):
     scantrust_id = args.scantrust_id
-    details = args.details
+    item_name = args.item_name
+    item_info = args.item_info
+    item_color = args.item_color
+    item_size = args.item_size
+    item_img = args.item_img
+    item_img_md5 = args.item_img_md5
 
     url = _get_url(args)
     keyfile = _get_keyfile(args)
@@ -361,12 +364,14 @@ def do_create(args):
 
     if args.wait and args.wait > 0:
         response = client.create_item(
-            scantrust_id, details, wait=args.wait,
+            scantrust_id, item_name, item_info, item_color, item_size, item_img, item_img_md5,
+            wait=args.wait,
             auth_user=auth_user,
             auth_password=auth_password)
     else:
         response = client.create_item(
-            scantrust_id, details, auth_user=auth_user,
+            scantrust_id, item_name, item_info, item_color, item_size, item_img, item_img_md5,
+            auth_user=auth_user,
             auth_password=auth_password)
 
     print("Response: {}".format(response))
