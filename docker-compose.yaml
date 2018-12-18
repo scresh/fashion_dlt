@@ -3,7 +3,7 @@ version: "3.7"
 services:
 
   settings-tp:
-    image: hyperledger/sawtooth-settings-tp
+    image: hyperledger/sawtooth-settings-tp:1.0
     container_name: sawtooth-settings-tp-default
     depends_on:
       - validator
@@ -19,7 +19,7 @@ services:
     entrypoint: fashion-tp -vv -C tcp://validator:4004
 
   validator:
-    image: hyperledger/sawtooth-validator
+    image: hyperledger/sawtooth-validator:1.0
     container_name: sawtooth-validator-default
     expose:
       - 4004
@@ -38,7 +38,7 @@ services:
         \""
 
   rest-api:
-    image: hyperledger/sawtooth-rest-api
+    image: hyperledger/sawtooth-rest-api:1.0
     container_name: sawtooth-rest-api-default
     ports:
       - "8008:8008"

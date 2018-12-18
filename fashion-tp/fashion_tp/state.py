@@ -120,13 +120,13 @@ class FashionItemState:
         return json.dumps(
             (self.scantrust_id, self.owner, self.item_name, self.item_info,
              self.item_color, self.item_size, self.item_img, self.item_img_md5)
-        ).decode()
+        ).encode()
 
     @staticmethod
     def from_payload(payload):
         try:
             scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5 = \
-                json.loads(payload.encode())
+                json.loads(payload.decode())
         except (ValueError, json.JSONDecodeError):
             raise InvalidTransaction('Incorrect payload structure')
 
@@ -142,24 +142,24 @@ def get_serialized_block(deserialized_block):
     Returns:
         (string): The UTF-8 encoded string stored in state.
     """
-    payloads = []
+    decoded_payloads = []
     for _, item_state in deserialized_block.items():
-        payloads.append(item_state.payload)
+        decoded_payloads.append(item_state.payload.decode())
 
-    return json.dumps(payloads).decode()
+    return json.dumps(decoded_payloads).encode()
 
 
 def get_deserialized_block(serialized_block):
     """Take bytes stored in state and deserialize them into FashionItemState objects.
     Args:
-        serialized_block (string): The UTF-8 encoded string stored in state.
+        serialized_block (bytes): The UTF-8 encoded string stored in state.
     Returns:
         (dict): ScanTrust ID of item (str) keys, FashionItemState values.
     """
     deserialized_block = {}
     try:
-        for payload in json.loads(serialized_block.encode()):
-            item = FashionItemState.from_payload(payload)
+        for decoded_payload in json.loads(serialized_block.decode()):
+            item = FashionItemState.from_payload(decoded_payload.encode())
             deserialized_block[item.scantrust_id] = item
     except ValueError:
         raise InternalError("Failed to deserialize item data")

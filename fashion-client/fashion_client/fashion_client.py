@@ -173,7 +173,7 @@ class FashionClient:
         # Serialization is just a delimited utf-8 encoded string
         payload = json.dumps(
             (scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5)
-        )
+        ).encode()
 
         # Construct the address
         address = self._get_address(scantrust_id)
@@ -185,7 +185,7 @@ class FashionClient:
             inputs=[address],
             outputs=[address],
             dependencies=[],
-            payload_sha512=_sha512(payload.encode()),
+            payload_sha512=_sha512(payload),
             batcher_public_key=self._signer.get_public_key().as_hex(),
             nonce=hex(random.randint(0, 2 ** 64))
         ).SerializeToString()
@@ -194,7 +194,7 @@ class FashionClient:
 
         transaction = Transaction(
             header=header,
-            payload=payload.encode(),
+            payload=payload,
             header_signature=signature
         )
 
