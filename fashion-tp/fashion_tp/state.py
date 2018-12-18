@@ -7,10 +7,16 @@ FASHION_NAMESPACE = hashlib.sha512('fashion'.encode("utf-8")).hexdigest()[0:6]
 
 OWNER_LENGTH = 66
 SCANTRUST_ID_LENGTH = 70
+ITEM_NAME_MAX_LENGTH = 16
+ITEM_INFO_MAX_LENGTH = 256
+ITEM_COLOR_MAX_LENGTH = 8
+ITEM_SIZE_MAX_LENGTH = 8
+ITEM_IMG_MAX_LENGTH = 128
+ITEM_IMG_HASH_LENGTH = 32
 
 
 class FashionItemState:
-    def __init__(self, scantrust_id, owner, details):
+    def __init__(self, scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5):
 
         if not scantrust_id:
             raise InvalidTransaction('Item ScanTrust ID is required')
@@ -36,7 +42,12 @@ class FashionItemState:
 
         self._scantrust_id = scantrust_id
         self._owner = owner
-        self._details = details
+        self._item_name = item_name
+        self._item_info = item_info
+        self._item_color = item_color
+        self._item_size = item_size
+        self._item_img = item_img
+        self._item_img_md5 = item_img_md5
 
     @property
     def scantrust_id(self):
@@ -47,25 +58,47 @@ class FashionItemState:
         return self._owner
 
     @property
-    def details(self):
-        return self._details
+    def item_name(self):
+        return self._item_name
 
+    @property
+    def item_info(self):
+        return self._item_info
+
+    @property
+    def item_color(self):
+        return self._item_color
+
+    @property
+    def item_size(self):
+        return self._item_size
+
+    @property
+    def item_img(self):
+        return self._item_img
+
+    @property
+    def item_img_md5(self):
+        return self._item_img_md5
     @property
     def address(self):
         return FASHION_NAMESPACE + hashlib.sha512(self.scantrust_id.encode('utf-8')).hexdigest()[:64]
 
     @property
     def payload(self):
-        return json.dumps((self.scantrust_id, self.owner, self.details)).encode()
+        return json.dumps(
+            (self.scantrust_id, self.owner, self.item_name, self.item_info,
+             self.item_color, self.item_size, self.item_img, self.item_img_md5)
+        ).encode()
 
     @staticmethod
     def from_payload(payload):
         try:
-            scantrust_id, owner, details = json.loads(payload.decode())
+            scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5 = json.loads(payload.decode())
         except (ValueError, json.JSONDecodeError):
             raise InvalidTransaction('Incorrect payload structure')
 
-        return FashionItemState(scantrust_id, owner, details)
+        return FashionItemState(scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5)
 
 
 def get_serialized_block(deserialized_block):
