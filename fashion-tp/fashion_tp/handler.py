@@ -33,7 +33,7 @@ class FashionTransactionHandler(TransactionHandler):
         current_item_payload = fashion_dlt.get_item_payload(new_item)
 
         if current_item_payload is None:
-
+            # TODO: Add authentication
             if signer != new_item.owner:
                 raise InvalidTransaction(
                     'Invalid action: New item owner must be transaction signer')

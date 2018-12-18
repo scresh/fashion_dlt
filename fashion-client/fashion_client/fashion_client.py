@@ -51,12 +51,11 @@ class FashionClient:
         self._signer = CryptoFactory(create_context('secp256k1')) \
             .new_signer(private_key)
 
-    def create_item(self, scantrust_id, item_name, item_info, item_color, item_size, item_img, item_img_md5,
-                    wait=None, auth_user=None, auth_password=None):
+    def create_item(self, scantrust_id, details, wait=None, auth_user=None, auth_password=None):
         return self._send_fashion_txn(
             scantrust_id,
             self._signer.get_public_key().as_hex(),
-            item_name, item_info, item_color, item_size, item_img, item_img_md5,
+            details,
             wait=wait,
             auth_user=auth_user,
             auth_password=auth_password)
@@ -65,7 +64,7 @@ class FashionClient:
         return self._send_fashion_txn(
             scantrust_id,
             recipient,
-            '', '', '', '', '', '',
+            '',
             wait=wait,
             auth_user=auth_user,
             auth_password=auth_password)
@@ -166,15 +165,16 @@ class FashionClient:
         return result.text
 
     def _send_fashion_txn(self,
-                          scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5,
+                          scantrust_id,
+                          owner,
+                          details,
                           wait=None,
                           auth_user=None,
                           auth_password=None):
         # Serialization is just a delimited utf-8 encoded string
         payload = json.dumps(
-            (scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5)
+            (scantrust_id, owner, details)
         ).encode()
-
         # Construct the address
         address = self._get_address(scantrust_id)
 

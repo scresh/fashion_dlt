@@ -25,8 +25,6 @@ setup(
     author='scresh',
     url='https://github.com/scresh/fashion_dlt',
     packages=find_packages(),
-    package_data={'': ['config.ini']},
-    include_package_data=True,
     install_requires=[
         'aiohttp',
         'colorlog',
