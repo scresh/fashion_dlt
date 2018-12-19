@@ -48,7 +48,7 @@ class FashionTransactionHandler(TransactionHandler):
                 raise InvalidTransaction(
                     'Invalid action: Item does not belong to transaction signer')
 
-            if new_item.owner != current_item.owner:
+            if new_item.owner == current_item.owner:
                 raise InvalidTransaction(
                     'Invalid action: Can not sent owned item to yourself')
 
