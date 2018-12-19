@@ -153,7 +153,7 @@ class FashionDLT:
     def get_item_payload(self, item):
         address = item.address
         scantrust_id = item.scantrust_id
-        return self._get_item_block(address).get(scantrust_id)
+        return self._get_item_block(address).get(scantrust_id).payload
 
     def _store_item(self, item_address, item_block):
         state_data = get_serialized_block(item_block)
