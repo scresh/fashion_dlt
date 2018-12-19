@@ -322,11 +322,7 @@ def main(prog_name=os.path.basename(sys.argv[0]), args=None):
 
     if args.command == 'create':
         do_create(args)
-    # elif args.command == 'list':
-    #     do_list(args)
-    # elif args.command == 'show':
-    #     do_show(args)
-    elif args.command == 'take':
+    elif args.command == 'send':
         do_send(args)
     else:
         raise FashionException("invalid command: {}".format(args.command))
