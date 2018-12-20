@@ -19,106 +19,97 @@ ITEM_IMG_HASH_LENGTH = 32
 ITEM_IMG_TIMEOUT = 1.0
 
 
-def remove_control_chars(text):
-    return ''.join([*map(lambda x: [x, ''][ord(x) < ord(' ')], text)])
+def hex_verify(hex_str, name, length):
+    if not hex_str:
+        raise InvalidTransaction(f'Item {name} is required')
+
+    if not isinstance(hex_str, str):
+        raise InvalidTransaction(f'Item {name} must be string')
+
+    if not all([*map(lambda c: (ord('0') <= ord(c) <= ord('9')) or (ord('a') <= ord(c) <= ord('f')), hex_str)]):
+        raise InvalidTransaction(f'Item {name} should only consist of lowercase hexadecimal characters')
+
+    if not (len(hex_str) == length):
+        raise InvalidTransaction(f'Item {name} length should be {length} characters')
 
 
-def get_serialized_block(deserialized_block):
-    """Takes a dict of FashionItemState objects and serializes them into bytes.
+def img_verify(url, md5):
+    if not url:
+        raise InvalidTransaction(f'Item image url is required')
+
+    if not md5:
+        raise InvalidTransaction(f'Item image MD5 is required')
+
+    if not isinstance(url, str):
+        raise InvalidTransaction(f'Item image url must be string')
+
+    if not (len(url) <= ITEM_IMG_MAX_LENGTH):
+        raise InvalidTransaction(f'Item image url length can not be grater than {ITEM_IMG_MAX_LENGTH} characters')
+
+    try:
+        img = request.urlopen(url, timeout=ITEM_IMG_TIMEOUT).read()
+        if hashlib.md5(img).hexdigest() != md5:
+            raise InvalidTransaction(f'Incorrect image MD5 hash')
+    except (error.URLError, socket.timeout, ValueError):
+        raise InvalidTransaction('Incorrect image URL')
+
+
+def text_verify(text, name, max_length):
+    if not text:
+        raise InvalidTransaction(f'Item {name} is required')
+
+    if not isinstance(name, str):
+        raise InvalidTransaction(f'Item {name} must be string')
+
+    if not text.isprintable():
+        raise InvalidTransaction(f'Item {name} should only consist of printable characters')
+
+    if not (len(text) <= max_length):
+        raise InvalidTransaction(f'Item {name} length can not be grater than {max_length} characters')
+
+
+def serialize_batch(deserialized_batch):
+    """Takes a dictionary of FashionItemState objects and serializes it into bytes.
     Args:
-        deserialized_block (dict): ScanTrust ID of item (str) keys, FashionItemState values.
+        deserialized_batch (dict): ScanTrust ID of item (str) keys, FashionItemState values
     Returns:
-        (string): The UTF-8 encoded string stored in state.
+        (bytes): The encoded string, witch is JSON representation of array of decoded payloads
     """
     decoded_payloads = []
-    for _, item_state in deserialized_block.items():
+    for _, item_state in deserialized_batch.items():
         decoded_payloads.append(item_state.payload.decode())
 
     return json.dumps(decoded_payloads).encode()
 
 
-def get_deserialized_block(serialized_block):
-    """Take bytes stored in state and deserialize them into FashionItemState objects.
+def deserialize_batch(serialized_batch):
+    """Take bytes and deserialize them into dictionary of FashionItemState objects.
     Args:
-        serialized_block (bytes): The UTF-8 encoded string stored in state.
+        serialized_batch (bytes): The encoded string, witch is JSON representation of array of decoded payloads
     Returns:
-        (dict): ScanTrust ID of item (str) keys, FashionItemState values.
+        (dict): ScanTrust ID of item (str) keys, FashionItemState values
     """
-    deserialized_block = {}
+    deserialized_batch = {}
     try:
-        for decoded_payload in json.loads(serialized_block.decode()):
+        for decoded_payload in json.loads(serialized_batch.decode()):
             item = FashionItemState.from_payload(decoded_payload.encode())
-            deserialized_block[item.scantrust_id] = item
+            deserialized_batch[item.scantrust_id] = item
     except ValueError:
         raise InternalError("Failed to deserialize item data")
 
-    return deserialized_block
+    return deserialized_batch
 
 
 class FashionItemState:
     def __init__(self, scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5):
 
-        scantrust_id = remove_control_chars(scantrust_id)
-        owner = remove_control_chars(owner)
-        item_name = remove_control_chars(item_name)
-        item_info = remove_control_chars(item_info)
-        item_color = remove_control_chars(item_color)
-        item_size = remove_control_chars(item_size)
-        item_img = remove_control_chars(item_img)
-        item_img_md5 = remove_control_chars(item_img_md5)
-
-        if not scantrust_id:
-            raise InvalidTransaction('Item ScanTrust ID is required')
-
-        if len(scantrust_id) != SCANTRUST_ID_LENGTH:
-            raise InvalidTransaction('Item ScanTrust ID incorrect length')
-
-        try:
-            int(scantrust_id, 16)
-        except ValueError:
-            raise InvalidTransaction('Item ScanTrust ID should contain only hexadecimal characters')
-
-        if not owner:
-            raise InvalidTransaction('Item owner address is required')
-
-        if len(owner) != OWNER_LENGTH:
-            raise InvalidTransaction('Item owner address incorrect length')
-
-        try:
-            int(owner, 16)
-        except ValueError:
-            raise InvalidTransaction('Owner address should contain only hexadecimal characters')
-
-        if len(item_name) > ITEM_NAME_MAX_LENGTH:
-            raise InvalidTransaction('Item name too long')
-
-        if len(item_info) > ITEM_INFO_MAX_LENGTH:
-            raise InvalidTransaction('Item info too long')
-
-        if len(item_color) > ITEM_COLOR_MAX_LENGTH:
-            raise InvalidTransaction('Item color too long')
-
-        if len(item_size) > ITEM_SIZE_MAX_LENGTH:
-            raise InvalidTransaction('Item size too long')
-
-        if len(item_img) > ITEM_IMG_MAX_LENGTH:
-            raise InvalidTransaction('Item image url too long')
-
-        if len(item_img_md5) != 0:
-            if len(item_img_md5) != ITEM_IMG_HASH_LENGTH:
-                raise InvalidTransaction(f'Image MD5 incorrect length')
-
-            try:
-                int(item_img_md5, 16)
-            except ValueError:
-                raise InvalidTransaction('Image MD5 should contain only hexadecimal characters')
-
-            try:
-                img = request.urlopen(item_img, timeout=ITEM_IMG_TIMEOUT).read()
-                if hashlib.md5(img).hexdigest() != item_img_md5:
-                    raise InvalidTransaction(f'Incorrect image MD5 hash')
-            except (error.URLError, socket.timeout):
-                raise InvalidTransaction('Incorrect image URL')
+        hex_verify(scantrust_id, 'ScanTrust ID', SCANTRUST_ID_LENGTH)
+        hex_verify(owner, 'owner', OWNER_LENGTH)
+        text_verify(item_name, 'name', ITEM_NAME_MAX_LENGTH)
+        text_verify(item_info, 'info', ITEM_INFO_MAX_LENGTH)
+        text_verify(item_color, 'color', ITEM_COLOR_MAX_LENGTH)
+        text_verify(item_size, 'size', ITEM_SIZE_MAX_LENGTH)
+        img_verify(item_img, item_img_md5)
 
         self._scantrust_id = scantrust_id
         self._owner = owner
@@ -195,45 +186,66 @@ class FashionDLT:
         item_address = item_state.address
 
         # Get current item block
-        item_block = self._get_item_block(item_address)
+        item_batch = self._get_item_last_batch(item_address)
 
         # Update item block
-        item_block[item_state.scantrust_id] = item_state
-        self._store_item(item_address, item_block)
+        item_batch[item_state.scantrust_id] = item_state
+        self._store_item(item_address, item_batch)
 
-    def get_item_payload(self, item):
+    def get_item_last_payload(self, item):
         address = item.address
         scantrust_id = item.scantrust_id
-        if self._get_item_block(address).get(scantrust_id):
-            return self._get_item_block(address).get(scantrust_id).payload
+        if self._get_item_last_batch(address).get(scantrust_id):
+            return self._get_item_last_batch(address).get(scantrust_id).payload
         else:
             return None
 
-    def _store_item(self, item_address, item_block):
-        state_data = get_serialized_block(item_block)
+    def get_item_first_payload(self, item):
+        address = item.address
+        scantrust_id = item.scantrust_id
+        if self._get_item_first_batch(address).get(scantrust_id):
+            return self._get_item_last_batch(address).get(scantrust_id).payload
+        else:
+            return None
 
-        self._address_cache[item_address] = state_data
+    def _store_item(self, item_address, item_batch):
+        state_data = serialize_batch(item_batch)
+
+        if self._address_cache.get(item_address):
+            self._address_cache[item_address].insert(0, state_data)
+        else:
+            self._address_cache[item_address] = [state_data, ]
 
         self._context.set_state(
             {item_address: state_data},
             timeout=self.TIMEOUT)
 
-    def _get_item_block(self, item_address):
-        if item_address in self._address_cache:
-            if self._address_cache[item_address]:
-                serialized_block = self._address_cache[item_address]
-                block = get_deserialized_block(serialized_block)
-            else:
-                block = {}
+    def _get_item_all_batches(self, item_address):
+        if self._address_cache.get(item_address):
+            serialized_batches = self._address_cache[item_address]
+            deserialized_batches = [*map(lambda x: deserialize_batch(x), serialized_batches)]
 
         else:
             state_entries = self._context.get_state([item_address], timeout=self.TIMEOUT)
 
             if state_entries:
-                self._address_cache[item_address] = state_entries[0].data
-                block = get_deserialized_block(state_entries[0].data)
+                self._address_cache[item_address] = [*map(lambda x: x.data, state_entries)]
+                serialized_batches = self._address_cache[item_address]
+                deserialized_batches = [*map(lambda x: deserialize_batch(x), serialized_batches)]
             else:
-                self._address_cache[item_address] = None
-                block = {}
+                self._address_cache[item_address] = []
+                deserialized_batches = []
 
-        return block
+        return deserialized_batches
+
+    def _get_item_last_batch(self, item_address):
+        try:
+            return self._get_item_all_batches(item_address)[0]
+        except IndexError:
+            return None
+
+    def _get_item_first_batch(self, item_address):
+        try:
+            return self._get_item_all_batches(item_address)[-1]
+        except IndexError:
+            return None

@@ -30,7 +30,7 @@ class FashionTransactionHandler(TransactionHandler):
         new_item = FashionItemState.from_payload(transaction.payload)
         fashion_dlt = FashionDLT(context)
 
-        current_item_payload = fashion_dlt.get_item_payload(new_item)
+        current_item_payload = fashion_dlt.get_item_last_payload(new_item)
 
         if current_item_payload is None:
             # TODO: Add authentication
@@ -39,7 +39,7 @@ class FashionTransactionHandler(TransactionHandler):
                     'Invalid action: New item owner must be transaction signer')
 
             fashion_dlt.add_item_state(new_item)
-            _display(new_item, signer)
+            _display(new_item, signer, new_item.owner)
 
         else:
             current_item = FashionItemState.from_payload(current_item_payload)
@@ -48,39 +48,17 @@ class FashionTransactionHandler(TransactionHandler):
                 raise InvalidTransaction(
                     'Invalid action: Item does not belong to transaction signer')
 
-            if new_item.owner != current_item.owner:
+            if new_item.owner == current_item.owner:
                 raise InvalidTransaction(
                     'Invalid action: Can not sent owned item to yourself')
 
-            if new_item.item_name != current_item.item_name:
-                raise InvalidTransaction(
-                    'Invalid action: Invalid item name')
-
-            if new_item.item_info != current_item.item_info:
-                raise InvalidTransaction(
-                    'Invalid action: Invalid item info')
-
-            if new_item.item_color != current_item.item_color:
-                raise InvalidTransaction(
-                    'Invalid action: Invalid item color')
-
-            if new_item.item_size != current_item.item_size:
-                raise InvalidTransaction(
-                    'Invalid action: Invalid item size')
-
-            if new_item.item_img != current_item.item_img:
-                raise InvalidTransaction(
-                    'Invalid action: Invalid item image')
-
-            if new_item.item_img_md5 != current_item.item_img_md5:
-                raise InvalidTransaction(
-                    'Invalid action: Invalid item image MD5')
-
+            item_first_payload = fashion_dlt.get_item_first_payload(new_item)
+            first_item = FashionItemState.from_payload(item_first_payload)
             fashion_dlt.add_item_state(new_item)
-            _display(new_item, signer)
+            _display(first_item, signer, new_item.owner)
 
 
-def _display(item, signer):
+def _display(item, sender, receiver):
     border = '+--------------+-----------------------------------------------------------------------------------+'
     row = '| {} | {} |'
     col_left, col_right = 12, 81
@@ -92,14 +70,15 @@ def _display(item, signer):
         'Info': [item.item_info, f'{item.item_info[:col_right-3]}...'][len(item.item_info) > col_right],
         'Image URL': item.item_img,
         'Image MD5': item.item_img_md5,
+        'Sender': sender,
+        'Receiver': receiver,
+
     }
 
-    lines.append(signer)
     lines.append(border)
     for key, value in item_dict.items():
         lines.append(row.format(key.center(12, ' '), value.center(81, ' ')))
         lines.append(border)
-    lines.append(item.owner)
 
     LOGGER.debug('\n'.join(lines))
 
