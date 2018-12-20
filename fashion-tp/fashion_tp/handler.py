@@ -52,6 +52,30 @@ class FashionTransactionHandler(TransactionHandler):
                 raise InvalidTransaction(
                     'Invalid action: Can not sent owned item to yourself')
 
+            if new_item.item_name != current_item.item_name:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item name')
+
+            if new_item.item_info != current_item.item_info:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item info')
+
+            if new_item.item_color != current_item.item_color:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item color')
+
+            if new_item.item_size != current_item.item_size:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item size')
+
+            if new_item.item_img != current_item.item_img:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item image')
+
+            if new_item.item_img_md5 != current_item.item_img_md5:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item image MD5')
+
             item_first_payload = fashion_dlt.get_item_first_payload(new_item)
             first_item = FashionItemState.from_payload(item_first_payload)
             fashion_dlt.add_item_state(new_item)
