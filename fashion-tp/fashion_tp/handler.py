@@ -39,7 +39,7 @@ class FashionTransactionHandler(TransactionHandler):
                     'Invalid action: New item owner must be transaction signer')
 
             fashion_dlt.add_item_state(new_item)
-            _display(new_item)
+            _display(new_item, signer)
 
         else:
             current_item = FashionItemState.from_payload(current_item_payload)
@@ -53,7 +53,7 @@ class FashionTransactionHandler(TransactionHandler):
                     'Invalid action: Can not sent owned item to yourself')
 
             fashion_dlt.add_item_state(new_item)
-            # _display(f'User {signer} sent item [{new_item.scantrust_id}] to {new_item.owner}')
+            _display(new_item, signer)
 
 
 def _display(item, signer):
