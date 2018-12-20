@@ -48,31 +48,31 @@ class FashionTransactionHandler(TransactionHandler):
                 raise InvalidTransaction(
                     'Invalid action: Item does not belong to transaction signer')
 
-            if new_item.owner == current_item.owner:
+            if new_item.owner != current_item.owner:
                 raise InvalidTransaction(
                     'Invalid action: Can not sent owned item to yourself')
 
-            if new_item.item_name == current_item.item_name:
+            if new_item.item_name != current_item.item_name:
                 raise InvalidTransaction(
                     'Invalid action: Invalid item name')
 
-            if new_item.item_info == current_item.item_info:
+            if new_item.item_info != current_item.item_info:
                 raise InvalidTransaction(
                     'Invalid action: Invalid item info')
 
-            if new_item.item_color == current_item.item_color:
+            if new_item.item_color != current_item.item_color:
                 raise InvalidTransaction(
                     'Invalid action: Invalid item color')
 
-            if new_item.item_size == current_item.item_size:
+            if new_item.item_size != current_item.item_size:
                 raise InvalidTransaction(
                     'Invalid action: Invalid item size')
 
-            if new_item.item_img == current_item.item_img:
+            if new_item.item_img != current_item.item_img:
                 raise InvalidTransaction(
                     'Invalid action: Invalid item image')
 
-            if new_item.item_img_md5 == current_item.item_img_md5:
+            if new_item.item_img_md5 != current_item.item_img_md5:
                 raise InvalidTransaction(
                     'Invalid action: Invalid item image MD5')
 
@@ -84,7 +84,7 @@ def _display(item, signer):
     border = '+--------------+-----------------------------------------------------------------------------------+'
     row = '| {} | {} |'
     col_left, col_right = 12, 81
-    lines = []
+    lines = ['\n']
 
     item_dict = {
         'ScanTrust ID': item.scantrust_id,
