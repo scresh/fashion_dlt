@@ -39,7 +39,7 @@ class FashionTransactionHandler(TransactionHandler):
                     'Invalid action: New item owner must be transaction signer')
 
             fashion_dlt.add_item_state(new_item)
-            _display(f'User {signer} created a new item [{new_item.scantrust_id}]')
+            _display(new_item)
 
         else:
             current_item = FashionItemState.from_payload(current_item_payload)
@@ -53,21 +53,25 @@ class FashionTransactionHandler(TransactionHandler):
                     'Invalid action: Can not sent owned item to yourself')
 
             fashion_dlt.add_item_state(new_item)
-            _display(f'User {signer} sent item [{new_item.scantrust_id}] to {new_item.owner}')
+            # _display(f'User {signer} sent item [{new_item.scantrust_id}] to {new_item.owner}')
 
 
-def _display(msg):
-    n = msg.count("\n")
+def _display(item, signer):
+    border = '+--------------+-----------------------------------------------------------------------------------+'
+    row = '| {} | {} |'
+    col_left, col_right = 12, 81
 
-    if n > 0:
-        msg = msg.split("\n")
-        length = max(len(line) for line in msg)
-    else:
-        length = len(msg)
-        msg = [msg]
+    item_dict = {
+        'ScanTrust ID': item.scantrust_id,
+        'Name': f'{item.item_name} ({item.item_color}) [{item.item_size}]',
+        'Info': [item.item_info, f'{item.item_info[:col_right-3]}...'][len(item.item_info) > col_right],
+        'Image URL': item.item_img,
+        'Image MD5': item.item_img_md5,
+    }
 
-    # pylint: disable=logging-not-lazy
-    LOGGER.debug("+" + (length + 2) * "-" + "+")
-    for line in msg:
-        LOGGER.debug("+ " + line.center(length) + " +")
-    LOGGER.debug("+" + (length + 2) * "-" + "+")
+    LOGGER.debug(signer)
+    LOGGER.debug(border)
+    for key, value in item_dict.items():
+        LOGGER.debug(row.format(key.center(12, ' '), value.center(81, ' ')))
+        LOGGER.debug(border)
+    LOGGER.debug(item.owner)
