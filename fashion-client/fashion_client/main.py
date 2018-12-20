@@ -143,7 +143,9 @@ def add_send_parser(subparsers, parent_parser):
         help='Send item to other user',
         description='Sends a transaction to send a specific fashion item '
                     'with the identifier <scantrust_id> to user with.'
-                    'address <recipient>',
+                    'address <recipient> and item details:'
+                    '<item_name>, <item_info>, <item_color>,'
+                    '<item_size>, <item_img>, <item_img_md5>',
         parents=[parent_parser])
 
     parser.add_argument(
@@ -155,6 +157,36 @@ def add_send_parser(subparsers, parent_parser):
         'recipient',
         type=str,
         help='Recipient public key')
+
+    parser.add_argument(
+        'item_name',
+        type=str,
+        help='fashion item name')
+
+    parser.add_argument(
+        'item_info',
+        type=str,
+        help='fashion item info')
+
+    parser.add_argument(
+        'item_color',
+        type=str,
+        help='fashion item color')
+
+    parser.add_argument(
+        'item_size',
+        type=str,
+        help='fashion item size')
+
+    parser.add_argument(
+        'item_img',
+        type=str,
+        help='fashion item image')
+
+    parser.add_argument(
+        'item_img_md5',
+        type=str,
+        help='fashion item image MD5 hash')
 
     parser.add_argument(
         '--url',
@@ -265,6 +297,12 @@ def do_create(args):
 def do_send(args):
     scantrust_id = args.scantrust_id
     recipient = args.recipient
+    item_name = args.item_name
+    item_info = args.item_info
+    item_color = args.item_color
+    item_size = args.item_size
+    item_img = args.item_img
+    item_img_md5 = args.item_img_md5
 
     url = _get_url(args)
     keyfile = _get_keyfile(args)
@@ -274,12 +312,13 @@ def do_send(args):
 
     if args.wait and args.wait > 0:
         response = client.send_item(
-            scantrust_id, recipient, wait=args.wait,
+            scantrust_id, recipient, item_name, item_info, item_color, item_size, item_img, item_img_md5,
+            wait=args.wait,
             auth_user=auth_user,
             auth_password=auth_password)
     else:
         response = client.send_item(
-            scantrust_id, recipient,
+            scantrust_id, recipient, item_name, item_info, item_color, item_size, item_img, item_img_md5,
             auth_user=auth_user,
             auth_password=auth_password)
 

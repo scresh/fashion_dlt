@@ -61,11 +61,12 @@ class FashionClient:
             auth_user=auth_user,
             auth_password=auth_password)
 
-    def send_item(self, scantrust_id, recipient, wait=None, auth_user=None, auth_password=None):
+    def send_item(self, scantrust_id, recipient, item_name, item_info, item_color, item_size, item_img, item_img_md5,
+                  wait=None, auth_user=None, auth_password=None):
         return self._send_fashion_txn(
             scantrust_id,
             recipient,
-            '', '', '', '', '', '',
+            item_name, item_info, item_color, item_size, item_img, item_img_md5,
             wait=wait,
             auth_user=auth_user,
             auth_password=auth_password)
