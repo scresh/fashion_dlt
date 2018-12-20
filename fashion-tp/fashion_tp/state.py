@@ -242,10 +242,10 @@ class FashionDLT:
         try:
             return self._get_item_all_batches(item_address)[0]
         except IndexError:
-            return None
+            return {}
 
     def _get_item_first_batch(self, item_address):
         try:
             return self._get_item_all_batches(item_address)[-1]
         except IndexError:
-            return None
+            return {}
