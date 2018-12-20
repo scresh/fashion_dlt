@@ -52,6 +52,30 @@ class FashionTransactionHandler(TransactionHandler):
                 raise InvalidTransaction(
                     'Invalid action: Can not sent owned item to yourself')
 
+            if new_item.item_name == current_item.item_name:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item name')
+
+            if new_item.item_info == current_item.item_info:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item info')
+
+            if new_item.item_color == current_item.item_color:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item color')
+
+            if new_item.item_size == current_item.item_size:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item size')
+
+            if new_item.item_img == current_item.item_img:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item image')
+
+            if new_item.item_img_md5 == current_item.item_img_md5:
+                raise InvalidTransaction(
+                    'Invalid action: Invalid item image MD5')
+
             fashion_dlt.add_item_state(new_item)
             _display(new_item, signer)
 
@@ -60,6 +84,7 @@ def _display(item, signer):
     border = '+--------------+-----------------------------------------------------------------------------------+'
     row = '| {} | {} |'
     col_left, col_right = 12, 81
+    lines = []
 
     item_dict = {
         'ScanTrust ID': item.scantrust_id,
@@ -69,9 +94,12 @@ def _display(item, signer):
         'Image MD5': item.item_img_md5,
     }
 
-    LOGGER.debug(signer)
-    LOGGER.debug(border)
+    lines.append(signer)
+    lines.append(border)
     for key, value in item_dict.items():
-        LOGGER.debug(row.format(key.center(12, ' '), value.center(81, ' ')))
-        LOGGER.debug(border)
-    LOGGER.debug(item.owner)
+        lines.append(row.format(key.center(12, ' '), value.center(81, ' ')))
+        lines.append(border)
+    lines.append(item.owner)
+
+    LOGGER.debug('\n'.join(lines))
+
