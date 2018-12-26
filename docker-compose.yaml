@@ -55,5 +55,6 @@ services:
       - rest-api
     entrypoint: "bash -c \"\
         sawtooth keygen && \
+        python3 /root/web_backend/manage.py runserver && \
         tail -f /dev/null \
         \""

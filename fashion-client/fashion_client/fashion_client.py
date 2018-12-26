@@ -104,10 +104,8 @@ class FashionClient:
 
             return transaction_list
 
-        except BaseException as e:
-            print(str(e))
-            return None
-
+        except BaseException:
+            return []
 
     def show(self, scantrust_id, auth_user=None, auth_password=None):
         address = self._get_address(scantrust_id)
