@@ -84,8 +84,10 @@ class FashionClient:
             transaction_list = []
             if encoded_entries:
                 for entry in encoded_entries:
-                    sender = entry['signer_public_key']
-                    payload = json.loads(base64.b64decode(entry['payload']))[0]
+                    if entry['header']['family_name'] != 'fashion':
+                        continue
+                    sender = entry['header']['signer_public_key']
+                    payload = base64.b64decode(entry['payload'])
                     item_dict = self.from_payload(payload)
                     receiver = item_dict['owner']
                     item_id = item_dict['scantrust_id']
@@ -102,8 +104,10 @@ class FashionClient:
 
             return transaction_list
 
-        except BaseException:
+        except BaseException as e:
+            print(str(e))
             return None
+
 
     def show(self, scantrust_id, auth_user=None, auth_password=None):
         address = self._get_address(scantrust_id)
