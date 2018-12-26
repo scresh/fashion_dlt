@@ -20,6 +20,8 @@ from sawtooth_sdk.protobuf.batch_pb2 import Batch
 
 from .fashion_exceptions import FashionException
 
+FASHION_NAMESPACE = hashlib.sha512('fashion'.encode("utf-8")).hexdigest()[0:6]
+
 
 def _sha512(data):
     return hashlib.sha512(data).hexdigest()
@@ -71,20 +73,34 @@ class FashionClient:
             auth_user=auth_user,
             auth_password=auth_password)
 
-    def list(self, auth_user=None, auth_password=None):
-        fashion_prefix = self._get_prefix()
-
+    def list_transactions(self, scantrust_id, user_address, auth_user=None, auth_password=None):
         result = self._send_request(
-            "state?address={}".format(fashion_prefix),
+            "transactions",
             auth_user=auth_user,
             auth_password=auth_password)
 
         try:
-            encoded_entries = yaml.safe_load(result)["data"]
+            encoded_entries = yaml.safe_load(result)['data']
+            transaction_list = []
+            if encoded_entries:
+                for entry in encoded_entries:
+                    sender = entry['signer_public_key']
+                    payload = json.loads(base64.b64decode(entry['payload']))[0]
+                    item_dict = self.from_payload(payload)
+                    receiver = item_dict['owner']
+                    item_id = item_dict['scantrust_id']
 
-            return [
-                base64.b64decode(entry["data"]) for entry in encoded_entries
-            ]
+                    if scantrust_id:
+                        if scantrust_id == item_id:
+                            transaction_list.append(item_dict)
+
+                    elif user_address:
+                        if (user_address == sender) or (user_address == receiver):
+                            transaction_list.append(item_dict)
+                    else:
+                        transaction_list.append(item_dict)
+
+            return transaction_list
 
         except BaseException:
             return None
@@ -117,10 +133,25 @@ class FashionClient:
     def _get_prefix():
         return _sha512('fashion'.encode('utf-8'))[0:6]
 
-    def _get_address(self, name):
-        fashion_prefix = self._get_prefix()
-        item_address = _sha512(name.encode('utf-8'))[0:64]
-        return fashion_prefix + item_address
+    @staticmethod
+    def _get_address(scantrust_id):
+        return FASHION_NAMESPACE + hashlib.sha512(scantrust_id.encode('utf-8')).hexdigest()[:64]
+
+    @staticmethod
+    def from_payload(payload):
+        scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5 = \
+            json.loads(payload.decode())
+
+        return {
+            'scantrust_id': scantrust_id,
+            'owner': owner,
+            'item_name': item_name,
+            'item_info': item_info,
+            'item_color': item_color,
+            'item_size': item_size,
+            'item_img': item_img,
+            'item_img_md5': item_img_md5,
+        }
 
     def _send_request(self,
                       suffix,

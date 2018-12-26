@@ -83,10 +83,11 @@ class FashionTransactionHandler(TransactionHandler):
 
 
 def _display(item, sender, receiver):
-    border = '+--------------+-----------------------------------------------------------------------------------+'
-    row = '| {} | {} |'
     col_left, col_right = 12, 81
-    lines = ['\n']
+
+    border = '+-' + '-' * col_left + '-+-' + '-' * col_right + '-+'
+    row = '| {} | {} |'
+    lines = ['']
 
     item_dict = {
         'ScanTrust ID': item.scantrust_id,
@@ -101,7 +102,7 @@ def _display(item, sender, receiver):
 
     lines.append(border)
     for key, value in item_dict.items():
-        lines.append(row.format(key.center(12, ' '), value.center(81, ' ')))
+        lines.append(row.format(key.center(col_left, ' '), value.center(col_left, ' ')))
         lines.append(border)
 
     LOGGER.debug('\n'.join(lines))
