@@ -166,7 +166,12 @@ RUN apt-get update \
  && apt-get install -y \
  gnupg \
  systemd \
- python3-pip
+ python3-pip \
+ git \
+ nodejs \
+ npm
+
+
 
 COPY --from=sawtooth-signing-builder /sawtooth-core/python3-sawtooth-signing*.deb /tmp
 COPY --from=sawtooth-sdk-python-builder /sawtooth-core/sdk/python3-sawtooth-sdk*.deb /tmp
@@ -175,9 +180,9 @@ COPY --from=python-fashion-client-builder /fashion_dlt/python3-fashion-client*.d
 
 RUN cd /root \
  && git clone https://github.com/scresh/fashion_dlt.git \
- && cp -r fashion_dlt/fashion_client/web_backend/ . \
+ && cp -r fashion_dlt/fashion-client/web_backend . \
  && rm -rf fashion_dlt \
- && pip3 install web_backend/requirements.txt
+ && pip3 install -r web_backend/requirements.txt
 
 RUN echo "deb http://repo.sawtooth.me/ubuntu/ci bionic universe" >> /etc/apt/sources.list \
  && (apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 8AA7AF1F1091A5FD \

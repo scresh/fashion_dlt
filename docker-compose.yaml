@@ -51,10 +51,13 @@ services:
       context: ./fashion-client
       dockerfile: Dockerfile
     container_name: fashion-client
+    ports:
+    - "8000:8000"
     depends_on:
       - rest-api
     entrypoint: "bash -c \"\
+        cd /root/web_backend/ && \
+        python3 manage.py runserver &&\
         sawtooth keygen && \
-        python3 /root/web_backend/manage.py runserver && \
         tail -f /dev/null \
         \""
