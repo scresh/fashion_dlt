@@ -14,6 +14,8 @@ services:
     entrypoint: "bash -c \"\
         cd /root/web_backend/ && \
         python3 manage.py runserver &&\
+        cd /root/web_frontend/ && \
+        npm run start &&\
         sawtooth keygen && \
         tail -f /dev/null \
         \""
@@ -195,7 +197,7 @@ services:
     image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default-0
     ports:
-      - "8008:4000"
+      - "4000:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -208,7 +210,7 @@ services:
     image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default-1
     ports:
-      - "8008:4001"
+      - "4001:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -221,7 +223,7 @@ services:
     image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default-2
     ports:
-      - "8008:4002"
+      - "4002:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -234,7 +236,7 @@ services:
     image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default-3
     ports:
-      - "8008:4003"
+      - "4003:8008"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -376,6 +378,8 @@ services:
         poet registration create -k /etc/sawtooth/keys/validator.priv -o /poet-shared/poet.batch && \
         poet-engine -C tcp://validator-0:5050 --component tcp://validator-0:4004 \
     \""
+    depends_on:
+    - validator-0
 
   poet-engine-1:
     image: hyperledger/sawtooth-poet-engine:1.1
@@ -387,6 +391,8 @@ services:
         cp -a /poet-shared/validator-1/keys /etc/sawtooth && \
         poet-engine -C tcp://validator-1:5050 --component tcp://validator-1:4004 \
     \""
+    depends_on:
+    - validator-1
 
   poet-engine-2:
     image: hyperledger/sawtooth-poet-engine:1.1
@@ -398,6 +404,8 @@ services:
         cp -a /poet-shared/validator-2/keys /etc/sawtooth && \
         poet-engine -C tcp://validator-2:5050 --component tcp://validator-2:4004 \
     \""
+    depends_on:
+    - validator-2
 
   poet-engine-3:
     image: hyperledger/sawtooth-poet-engine:1.1
@@ -409,6 +417,8 @@ services:
         cp -a /poet-shared/validator-3/keys /etc/sawtooth && \
         poet-engine -C tcp://validator-3:5050 --component tcp://validator-3:4004 \
     \""
+    depends_on:
+    - validator-3
 
   poet-engine-4:
     image: hyperledger/sawtooth-poet-engine:1.1
@@ -420,12 +430,16 @@ services:
         cp -a /poet-shared/validator-4/keys /etc/sawtooth && \
         poet-engine -C tcp://validator-4:5050 --component tcp://validator-4:4004 \
     \""
+    depends_on:
+    - validator-4
 
   poet-validator-registry-tp-0:
     image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
     container_name: sawtooth-poet-validator-registry-tp-0
     expose:
       - 4004
+    depends_on:
+    - validator-0
     command: poet-validator-registry-tp -C tcp://validator-0:4004
     environment:
       PYTHONPATH: /project/sawtooth-core/consensus/poet/common
@@ -434,6 +448,8 @@ services:
   poet-validator-registry-tp-1:
     image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
     container_name: sawtooth-poet-validator-registry-tp-1
+    depends_on:
+    - validator-1
     expose:
       - 4004
     command: poet-validator-registry-tp -C tcp://validator-1:4004
@@ -444,6 +460,8 @@ services:
   poet-validator-registry-tp-2:
     image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
     container_name: sawtooth-poet-validator-registry-tp-2
+    depends_on:
+    - validator-2
     expose:
       - 4004
     command: poet-validator-registry-tp -C tcp://validator-2:4004
@@ -454,6 +472,8 @@ services:
   poet-validator-registry-tp-3:
     image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
     container_name: sawtooth-poet-validator-registry-tp-3
+    depends_on:
+    - validator-3
     expose:
       - 4004
     command: poet-validator-registry-tp -C tcp://validator-3:4004
@@ -464,6 +484,8 @@ services:
   poet-validator-registry-tp-4:
     image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
     container_name: sawtooth-poet-validator-registry-tp-4
+    depends_on:
+    - validator-4
     expose:
       - 4004
     command: poet-validator-registry-tp -C tcp://validator-4:4004

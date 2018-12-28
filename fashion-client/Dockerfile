@@ -181,8 +181,12 @@ COPY --from=python-fashion-client-builder /fashion_dlt/python3-fashion-client*.d
 RUN cd /root \
  && git clone https://github.com/scresh/fashion_dlt.git \
  && cp -r fashion_dlt/fashion-client/web_backend . \
+ && cp -r fashion_dlt/fashion-client/web_frontend . \
  && rm -rf fashion_dlt \
- && pip3 install -r web_backend/requirements.txt
+ && pip3 install -r web_backend/requirements.txt \
+ && cd web_frontend \
+ && npm install
+
 
 RUN echo "deb http://repo.sawtooth.me/ubuntu/ci bionic universe" >> /etc/apt/sources.list \
  && (apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 8AA7AF1F1091A5FD \

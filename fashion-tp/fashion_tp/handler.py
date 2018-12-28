@@ -102,7 +102,7 @@ def _display(item, sender, receiver):
 
     lines.append(border)
     for key, value in item_dict.items():
-        lines.append(row.format(key.center(col_left, ' '), value.center(col_left, ' ')))
+        lines.append(row.format(key.center(col_left, ' '), value.center(col_right, ' ')))
         lines.append(border)
 
     LOGGER.debug('\n'.join(lines))
