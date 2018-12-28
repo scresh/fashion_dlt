@@ -12,7 +12,7 @@ class TransactionList extends Component {
     state = {};
 
     componentDidMount() {
-        axios.get('http://0.0.0.0:8000/transaction')
+        axios.get('http://127.0.0.1:8000/transaction')
             .then(
                 res => {
                     this.setState({
@@ -43,7 +43,7 @@ class TransactionList extends Component {
                                 <IconText type="dollar" text={ "$" + item.price} />,
                                 <IconText type="calendar" text={ item.release_year } />,
                               ]}
-                              cover={<img alt={item.title} src={item.photo_url} />}
+                              cover={<img alt={item.scantrust_id} src={item.photo_url} />}
                             >
                                 <Meta
                                   avatar={
