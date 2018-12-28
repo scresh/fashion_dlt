@@ -9,22 +9,18 @@ const IconText = ({ type, text }) => (
 );
 
 class TransactionList extends Component {
-    state = {
-        initialValues: {},
-        filmID: null,
-    };
+    state = {};
 
     componentDidMount() {
-        axios.get('http://127.0.0.1:8000/transaction')
+        axios.get('http://0.0.0.0:8000/transaction')
             .then(
                 res => {
                     this.setState({
-                        films: res.data,
-                        initialValues: {},
+                        transactions: res.data
                     });
                 }
             );
-
+        console.log()
     }
 
     render() {

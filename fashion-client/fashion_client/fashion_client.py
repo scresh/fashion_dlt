@@ -111,7 +111,7 @@ class FashionClient:
         address = self._get_address(scantrust_id)
 
         result = self._send_request(
-            "state/{}".format(address),
+            "transactions/{}".format(address),
             name=scantrust_id,
             auth_user=auth_user,
             auth_password=auth_password)
