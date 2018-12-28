@@ -195,7 +195,7 @@ services:
     image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default-0
     ports:
-      - "4000:8008"
+      - "8008:4000"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -208,7 +208,7 @@ services:
     image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default-1
     ports:
-      - "4001:8008"
+      - "8008:4001"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -221,7 +221,7 @@ services:
     image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default-2
     ports:
-      - "4002:8008"
+      - "8008:4002"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -234,7 +234,7 @@ services:
     image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default-3
     ports:
-      - "4003:8008"
+      - "8008:4003"
     command: |
       bash -c "
         sawtooth-rest-api \
@@ -247,7 +247,7 @@ services:
     image: hyperledger/sawtooth-rest-api:1.1
     container_name: sawtooth-rest-api-default-4
     ports:
-      - "4004:8008"
+      - "8008:4004"
     command: |
       bash -c "
         sawtooth-rest-api \
