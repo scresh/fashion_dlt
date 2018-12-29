@@ -44,7 +44,7 @@ class TransactionsView(View):
         scantrust_id = request.GET.get('scantrust_id')
         address = request.GET.get('address')
 
-        transactions_url = 'http://127.0.0.1:4001/transactions'
+        transactions_url = 'http://rest-api-0:8008/transactions'
         transactions = get_json(transactions_url).get('data')
         result = []
 
