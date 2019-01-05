@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, {Component} from 'react';
 import { Table } from 'antd';
 
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 
 function addShortValues(transaction) {
     transaction['sender_short'] = transaction.sender.substring(0, 16);
