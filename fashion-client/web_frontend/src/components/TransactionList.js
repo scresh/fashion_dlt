@@ -1,68 +1,80 @@
 import axios from 'axios';
 import React, {Component} from 'react';
-import { List, Avatar, Icon, Tooltip, Tag, Card} from 'antd';
+import { Table } from 'antd';
 
-const { Meta } = Card;
+const { Column, ColumnGroup } = Table;
 
-const IconText = ({ type, text }) => (
-    <span><Icon type={type} style={{ marginRight: 8 }} />{text}</span>
-);
+function addShortValues(transaction) {
+    transaction['sender_short'] = transaction.sender.substring(0, 16);
+    transaction['receiver_short'] = transaction.receiver.substring(0,16);
+    transaction['scantrust_id_short'] = transaction.scantrust_id.substring(0,17);
+    return transaction;
+}
+
 
 class TransactionList extends Component {
-    state = {};
+    state = {
+        transactions: []
+    };
 
     componentDidMount() {
-        axios.get('http://127.0.0.1:8000/transaction')
-            .then(
-                res => {
-                    this.setState({
-                        transactions: res.data
-                    });
-                }
-            );
-        console.log()
+    axios.get(`http://127.0.0.1:8888/transactions/`)
+      .then(res => {
+        const transactions = res.data.data.map(
+            (transaction) => addShortValues(transaction)
+        );
+        this.setState({ transactions: transactions });
+        console.log(this.state.transactions)
+      })
     }
 
     render() {
         return (
             <div className="TransactionList">
-                <List
-                    grid={{ gutter: 32, column: 4 }}
-                    itemLayout="vertical"
-                    size="large"
-                    pagination={{
-                        pageSize: 8,
-                    }}
-                    dataSource={this.state.films}
-                    renderItem={item => (
-                        <List.Item>
-                            <Card
-                              style={{marginTop: 16 }}
-                              actions={[
-                                <IconText type="clock-circle" text={ item.length + ' min' } />,
-                                <IconText type="dollar" text={ "$" + item.price} />,
-                                <IconText type="calendar" text={ item.release_year } />,
-                              ]}
-                              cover={<img alt={item.scantrust_id} src={item.photo_url} />}
-                            >
-                                <Meta
-                                  avatar={
-                                    <Tooltip title={ item.language.name }>
-                                        <Avatar src={item.language.icon_url} />
-                                    </Tooltip>
-                                    }
-                                  title={<a href={`/films/${item.id}/`}>{item.title}</a>}
-                                  description={
-                                      item.category.map(
-                                          (category) =>
-                                              <Tag color="magenta" key={category.toLowerCase()}> { category } </Tag>
-                                      )}
-                                />
-                            </Card>
-                        </List.Item>
-                    )}
-
-                />
+                <Table dataSource={this.state.transactions}>
+                    <Column
+                      title="Name"
+                      dataIndex="item_name"
+                      key="item_name"
+                    />
+                    <Column
+                      title="Color"
+                      dataIndex="item_color"
+                      key="item_color"
+                    />
+                    <Column
+                      title="Size"
+                      dataIndex="item_size"
+                      key="item_size"
+                    />
+                    <Column
+                      title="Scantrust ID"
+                      key="scantrust_id"
+                      render={(text, record) => (
+                        <span>
+                          <a href={'items/' + record.scantrust_id}>{record.scantrust_id_short}</a>
+                        </span>
+                     )}
+                    />
+                    <Column
+                      title="Sender"
+                      key="sender"
+                      render={(text, record) => (
+                        <span>
+                          <a href={'users/' + record.sender}>{record.sender_short}</a>
+                        </span>
+                     )}
+                    />
+                    <Column
+                      title="Receiver"
+                      key="receiver"
+                      render={(text, record) => (
+                        <span>
+                          <a href={'users/' + record.receiver}>{record.receiver_short}</a>
+                        </span>
+                     )}
+                    />
+                  </Table>
             </div>
         );
     }

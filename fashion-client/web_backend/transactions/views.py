@@ -43,17 +43,19 @@ class TransactionsView(View):
     def get(self, request):
         scantrust_id = request.GET.get('scantrust_id')
         address = request.GET.get('address')
-
-        transactions_url = 'http://rest-api-0:8008/transactions'
+        # TODO: change url domain to rest-api-0
+        transactions_url = 'http://127.0.0.1:4000/transactions'
         transactions = get_json(transactions_url).get('data')
         result = []
 
         for transaction in transactions:
-            signer = transactions.get('header').get('signer_public_key')
+            if transaction.get('header').get('family_name') != 'fashion':
+                continue
+
+            signer = transaction.get('header').get('signer_public_key')
 
             base64_payload = transaction.get('payload')
-            payload = json.loads(base64.b64decode(base64_payload))
-
+            payload = base64.b64decode(base64_payload)
             result.append(from_payload(payload, signer))
 
         if address:
