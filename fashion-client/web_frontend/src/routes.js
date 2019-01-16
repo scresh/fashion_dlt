@@ -3,13 +3,20 @@ import { Route } from 'react-router-dom';
 import TransactionList from './components/TransactionList';
 import ItemDetails from './components/ItemDetails';
 import HomePage from './components/HomePage';
+import LogoutPage from "./components/LogoutPage";
+import LoginForm from "./components/LoginForm";
 
 class BaseRouter extends React.Component {
   render() {
     return <div>
-        <Route exact path='' render={() => (<HomePage cookies={this.props.cookies}/>)} />
-        <Route exact path='/transactions' render={() => (<TransactionList cookies={this.props.cookies}/>)} />
-        <Route exact path='/items/:itemID' render={() => (<ItemDetails cookies={this.props.cookies}/>)} />
+        <Route exact path='' component={HomePage} />
+        <Route exact path='/transactions' component={TransactionList} />
+        <Route exact path='/items/:itemID' component={ItemDetails} />
+
+        <Route exact path='/login' render={(props) => <LoginForm {...props} cookies={this.props.cookies} />}/>
+        <Route exact path='/logout' render={(props) => <LogoutPage {...props} cookies={this.props.cookies} />}/>
+
+        {/*<Route exact path='/items/:itemID' render={(props) => <ItemDetails {...props} cookies={this.props.cookies} />}*/}
     </div>;
   }
 }

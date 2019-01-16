@@ -66,6 +66,7 @@ class ItemDetails extends Component {
     }
 
     render() {
+        console.log(this.props.cookies);
         // if (this.state.dict.owners.length > 0){
             return (
                 <div className={this.state.scantrust_id}>
