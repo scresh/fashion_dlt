@@ -1,4 +1,5 @@
 import './App.css';
+import { withCookies } from 'react-cookie';
 import 'antd/dist/antd.css';
 import React, { Component } from 'react';
 import { BrowserRouter as Router , Link} from 'react-router-dom';
@@ -40,7 +41,7 @@ class App extends Component {
       <div className="App">
           <Router>
               <AppLayout>
-                <BaseRouter />
+                <BaseRouter cookies={this.props.cookies}/>
               </AppLayout>
           </Router>
       </div>
@@ -48,4 +49,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withCookies(App);

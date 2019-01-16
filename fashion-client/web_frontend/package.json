@@ -6,6 +6,7 @@
     "antd": "^3.11.6",
     "axios": "^0.18.0",
     "react": "^16.7.0",
+    "react-cookie": "^3.0.8",
     "react-dom": "^16.7.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.2"

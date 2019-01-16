@@ -155,13 +155,8 @@ class FashionClient:
             'item_img_md5': item_img_md5,
         }
 
-    def _send_request(self,
-                      suffix,
-                      data=None,
-                      content_type=None,
-                      name=None,
-                      auth_user=None,
-                      auth_password=None):
+    def _send_request(self, suffix, data=None, content_type=None,
+                      name=None, auth_user=None, auth_password=None):
         if self._base_url.startswith("http://"):
             url = "{}/{}".format(self._base_url, suffix)
         else:
