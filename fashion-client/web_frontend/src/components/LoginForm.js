@@ -11,26 +11,27 @@ class LoginForm extends Component {
         this.state = {private_key: '', public_key: ''};
     }
 
-    handleSubmit = (e) => {
+    validateKeyPair = (e) => {
         e.preventDefault();
 
-        this.props.cookies.set('private_key', e.target[1].value, { path: '/' });
-        this.props.cookies.set('public_key', e.target[0].value, { path: '/' });
-        window.location.reload();
+        axios.get(
+            `http://127.0.0.1:8888/validator/?private_key=${this.state.private_key}&public_key=${this.state.public_key}`
+        ).then(res => {
+            const result = res.data.result;
+            if (result === 'OK'){
+                this.props.cookies.set('private_key', this.state.private_key, { path: '/' });
+                this.props.cookies.set('public_key', this.state.public_key, { path: '/' });
+                window.location.reload();
+            } else {
+                console.log(result);
+            }
 
-        // axios.post(`http://127.0.0.1:8888/keys/`, {
-        //     private_key: e.target[1].value,
-        //     public_key: e.target[0].value
-        // }).then(function (response) {
-        //     console.log(response);
-        // }).catch(function (error) {
-        //     console.log(error);
-        // });
+          });
     };
 
     generateKeyPair = (e) => {
         e.preventDefault();
-        axios.get(`http://127.0.0.1:8888/keys/`)
+        axios.get(`http://127.0.0.1:8888/generator/`)
           .then(res => {
             const key_pair = res.data;
             this.setState({ private_key: key_pair.private_key,  public_key: key_pair.public_key });
@@ -78,8 +79,8 @@ class LoginForm extends Component {
                                     />
                                 </Form.Item>
                                 <Form.Item>
-                                  <Button type="primary" htmlType="submit" className="login-form-button">
-                                    Log in
+                                  <Button type="primary"  className="login-form-button" onClick={this.validateKeyPair}>
+                                    Login
                                   </Button>
                                     <a> </a>
                                   <Button type="primary"  className="login-form-button" onClick={this.generateKeyPair}>
