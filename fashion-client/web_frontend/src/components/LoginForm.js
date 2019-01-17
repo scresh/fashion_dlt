@@ -1,14 +1,14 @@
 import 'antd/dist/antd.css';
 import axios from 'axios';
 import React, {Component} from 'react';
-import { Form, Icon, Input, Button, Row, Col,} from 'antd';
+import { Form, Icon, Input, Button, Row, Col, Alert,} from 'antd';
 import {Redirect} from "react-router-dom";
 import './LoginForm.css'
 
 class LoginForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {private_key: '', public_key: ''};
+        this.state = {private_key: '', public_key: '', alert: ''};
     }
 
     validateKeyPair = (e) => {
@@ -23,7 +23,12 @@ class LoginForm extends Component {
                 this.props.cookies.set('public_key', this.state.public_key, { path: '/' });
                 window.location.reload();
             } else {
-                console.log(result);
+                this.setState(
+                    {alert: <Alert message="Error"
+                                   description={result}
+                                   type="error"
+                                   showIcon
+                            />});
             }
 
           });
@@ -58,6 +63,8 @@ class LoginForm extends Component {
                 <div className='homepage'>
                     <Row>
                         <Col span={18} offset={3}>
+                            {this.state.alert}
+                            <p/>
                             <Form onSubmit={this.handleSubmit} className="login-form">
                                 <Form.Item>
                                     <Input

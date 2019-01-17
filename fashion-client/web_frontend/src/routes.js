@@ -5,6 +5,7 @@ import ItemDetails from './components/ItemDetails';
 import HomePage from './components/HomePage';
 import LogoutPage from "./components/LogoutPage";
 import LoginForm from "./components/LoginForm";
+import UserDetails from "./components/UserDetails";
 
 class BaseRouter extends React.Component {
   render() {
@@ -12,6 +13,7 @@ class BaseRouter extends React.Component {
         <Route exact path='' component={HomePage} />
         <Route exact path='/transactions' component={TransactionList} />
         <Route exact path='/items/:itemID' component={ItemDetails} />
+        <Route exact path='/users/:userID' render={(props) => <UserDetails {...props} cookies={this.props.cookies} />}/>
 
         <Route exact path='/login' render={(props) => <LoginForm {...props} cookies={this.props.cookies} />}/>
         <Route exact path='/logout' render={(props) => <LogoutPage {...props} cookies={this.props.cookies} />}/>
