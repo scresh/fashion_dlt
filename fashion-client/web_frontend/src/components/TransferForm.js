@@ -5,10 +5,26 @@ import { Form, Icon, Input, Button, Row, Col, Alert,} from 'antd';
 import {Redirect} from "react-router-dom";
 import './Form.css'
 
-class LoginForm extends Component {
+class TransferForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {private_key: '', public_key: '', alert: ''};
+        this.state = {
+            item: {
+                public_key: this.props.cookies.get('public_key'),
+                private_key: this.props.cookies.get('private_key'),
+                scantrust_id: '',
+                item_name: '',
+                item_info: '',
+                item_color: '',
+                item_size: '',
+                item_img: '',
+                item_img_md5: '',
+            }
+        };
+        if (this.props.match.params.itemID){
+            axios.get(`http://127.0.0.1:8888/transactions/?scantrust_id=` + this.props.match.params.itemID)
+              .then(res => {this.setState(res.data.data[0]);})
+        }
     }
 
     validateKeyPair = (e) => {
@@ -55,52 +71,43 @@ class LoginForm extends Component {
 
 
     render() {
+        const formItemLayout = {
+            labelCol: {
+            xs: { span: 24 },
+            sm: { span: 8 },
+          },
+          wrapperCol: {
+            xs: { span: 24 },
+            sm: { span: 16 },
+          },
+        };
         if (this.props.cookies.get('public_key') && this.props.cookies.get('private_key')){
-            return <Redirect to='/' />;
-
-        }else{
             return (
                 <div className='homepage'>
                     <Row>
                         <Col span={18} offset={3}>
                             {this.state.alert}
                             <p/>
-                            <Form onSubmit={this.handleSubmit} className="login-form">
-                                <Form.Item>
-                                    <Input
-                                        className='public_key'
-                                        prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                        placeholder="Public key"
-                                        value={this.state.public_key}
-                                        onChange={this.updatePublicKey}
-
-                                    />
-                                </Form.Item>
-                                <Form.Item>
-                                    <Input
-                                        className='private_key'
-                                        prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                        placeholder="Private key"
-                                        value={this.state.private_key}
-                                        onChange={this.updatePrivateKey}
-                                    />
-                                </Form.Item>
-                                <Form.Item>
-                                  <Button type="primary"  className="login-form-button" onClick={this.validateKeyPair}>
-                                    Login
-                                  </Button>
-                                    <a> </a>
-                                  <Button type="primary"  className="login-form-button" onClick={this.generateKeyPair}>
-                                    Generate
-                                  </Button>
+                            <Form onSubmit={this.handleSubmit}>
+                                <Form.Item {...formItemLayout} label="Scantrust ID"><Input /></Form.Item>
+                                <Form.Item {...formItemLayout} label="Name"><Input /></Form.Item>
+                                <Form.Item {...formItemLayout} label="Info"><Input /></Form.Item>
+                                <Form.Item {...formItemLayout} label="Color"><Input /></Form.Item>
+                                <Form.Item {...formItemLayout} label="Size"><Input /></Form.Item>
+                                <Form.Item {...formItemLayout} label="Image URL"><Input /></Form.Item>
+                                <Form.Item {...formItemLayout} label="Receiver"><Input /></Form.Item>
+                                <Form.Item {...formItemLayout}>
+                                    <Button type="primary" htmlType="submit">Create</Button>
                                 </Form.Item>
                             </Form>
                         </Col>
                     </Row>
                 </div>
             );
+        }else{
+            return <Redirect to='/' />;
         }
     };
 }
 
-export default LoginForm;
+export default TransferForm;
