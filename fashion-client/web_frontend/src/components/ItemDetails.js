@@ -99,20 +99,17 @@ class ItemDetails extends Component {
                                           />
                                     </Col>
                                 </Row>
-                                <Row gutter={12}>
-                                    <Col span={12} offset={6}>
-                                         <Card title="Item history" bordered={false} >
-                                             <Timeline>
-                                                 {this.state.owners.map(el => <Timeline.Item>{el}</Timeline.Item>)}
-                                             </Timeline>
-                                         </Card>
-                                    </Col>
-                                </Row>
-
-
-
-
-
+                                        <p/>
+                                        <Table
+                                            style={{ width: '100%' }}
+                                            pagination={false}
+                                            bordered
+                                            dataSource = {[1]}
+                                            title={() => "Item history"}
+                                            footer={() => <Timeline>
+                                                {this.state.owners.map(el => <Timeline.Item>{el}</Timeline.Item>)}
+                                                </Timeline>}
+                                          />
                             </Card>
                         </Col>
                     </Row>
