@@ -13,8 +13,13 @@ services:
     - "8000:8000"
     entrypoint: "bash -c \"\
         sawtooth keygen && \
+        cd /web_backend/ && \
+        nohup python manage.py runserver 127.0.0.1:8888 && \
+        cd /web_frontend/ && \
+        npm run start http-server -a localhost -p 8000 && \
         tail -f /dev/null \
         \""
+
 
   validator-0:
     image: hyperledger/sawtooth-validator:1.1

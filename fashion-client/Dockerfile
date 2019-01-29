@@ -194,9 +194,4 @@ RUN echo "deb http://repo.sawtooth.me/ubuntu/ci bionic universe" >> /etc/apt/sou
  && apt-get update \
  && dpkg -i /tmp/python3-*.deb || true \
  && apt-get -f -y install
-
-RUN cd /web_backend/ \
- && nohup python manage.py runserver 127.0.0.1:8888 &\
- && cd /web_frontend/ &\
- && npm run start http-server -a localhost -p 8000 &
 # ----------------------------------------------------------------------------------------------------------------------
