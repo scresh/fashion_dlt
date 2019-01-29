@@ -9,9 +9,8 @@ services:
       context: ./fashion-client
       dockerfile: Dockerfile
     container_name: fashion-client
-#    ports:
-#    - "3000:3000"
-#    - "8000:8000"
+    ports:
+    - "8000:8000"
     entrypoint: "bash -c \"\
         sawtooth keygen && \
         tail -f /dev/null \

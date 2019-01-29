@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, {Component} from 'react';
 import { Card, Row, Col, List, Icon, Button } from 'antd';
+import {Link} from "react-router-dom";
 const { Meta } = Card;
 
 
@@ -45,9 +46,15 @@ class UserDetails extends Component {
         userAddress: this.props.match.params.userID,
         transactions: [],
         items: [],
+        activeButtons: false,
     };
 
     componentDidMount() {
+        if (this.props.cookies.get('public_key') && this.props.cookies.get('private_key')) {
+            if (this.props.cookies.get('public_key')  === this.state.userAddress){
+                this.setState({activeButtons: true});
+            }
+        }
     axios.get(`http://127.0.0.1:8888/transactions/?address=` + this.state.userAddress)
       .then(res => {this.setState(makeDict(res.data.data, this.state.userAddress));
       })
@@ -58,6 +65,13 @@ class UserDetails extends Component {
                 <div className={this.state.userAddress}>
                     <Row>
                         <Col span={18} offset={3}>
+                            <Button
+                                type="primary"
+                                block
+                                disabled={!this.state.activeButtons}
+                            >
+                                <Link to={'/transfer'}>Create item</Link>
+                            </Button>
                             <Card
                                 title={'User: ' + this.state.userAddress}
                             >
@@ -71,7 +85,14 @@ class UserDetails extends Component {
                                     renderItem={item => (
                                       <List.Item>
                                         <Card
-                                            actions={[<Button type="primary" block>Send item</Button>,]}
+                                            actions={[
+                                                <Button
+                                                    type="primary"
+                                                    block
+                                                    disabled={!this.state.activeButtons}
+                                                >
+                                                   <Link to={'/transfer/'  + item.scantrust_id}>Send item</Link>
+                                                </Button>,]}
                                             cover={<img
                                                 alt={item.scantrust_id.substring(0,16)}
                                                 src={item.item_img}

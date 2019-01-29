@@ -22,5 +22,6 @@ if ! (dpkg -l | grep docker-compose > /dev/null); then
   sudo groupadd docker
   sudo usermod -aG docker $USER
 fi
-docker volume prune
+docker-compose -f docker-compose.yaml down > /dev/null
+yes | docker volume prune > /dev/null
 docker-compose -f docker-compose.yaml up

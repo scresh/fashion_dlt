@@ -43,8 +43,7 @@ class TransactionsView(View):
     def get(self, request):
         scantrust_id = request.GET.get('scantrust_id')
         address = request.GET.get('address')
-        # TODO: change url domain to rest-api-0
-        transactions_url = 'http://127.0.0.1:4000/transactions'
+        transactions_url = 'http://rest-api-0:8008/transactions'
         transactions = get_json(transactions_url).get('data')
         result = []
 

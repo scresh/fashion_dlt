@@ -1,76 +1,85 @@
 import 'antd/dist/antd.css';
 import axios from 'axios';
 import React, {Component} from 'react';
-import { Form, Icon, Input, Button, Row, Col, Alert,} from 'antd';
+import { Form, Input, Button, Row, Col} from 'antd';
 import {Redirect} from "react-router-dom";
 import './Form.css'
 
 class TransferForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            item: {
-                public_key: this.props.cookies.get('public_key'),
-                private_key: this.props.cookies.get('private_key'),
-                scantrust_id: '',
-                item_name: '',
-                item_info: '',
-                item_color: '',
-                item_size: '',
-                item_img: '',
-                item_img_md5: '',
-            }
-        };
-        if (this.props.match.params.itemID){
-            axios.get(`http://127.0.0.1:8888/transactions/?scantrust_id=` + this.props.match.params.itemID)
-              .then(res => {this.setState(res.data.data[0]);})
+        this.state ={
+            sendingForm: false,
         }
     }
 
-    validateKeyPair = (e) => {
-        e.preventDefault();
+    componentDidMount(){
+        this.state = {
+                public_key: this.props.cookies.get('public_key'),
+                private_key: this.props.cookies.get('private_key'),
+        };
 
-        axios.get(
-            `http://127.0.0.1:8888/validator/?private_key=${this.state.private_key}&public_key=${this.state.public_key}`
-        ).then(res => {
-            const result = res.data.result;
-            if (result === 'OK'){
-                this.props.cookies.set('private_key', this.state.private_key, { path: '/' });
-                this.props.cookies.set('public_key', this.state.public_key, { path: '/' });
-                window.location.reload();
-            } else {
-                this.setState(
-                    {alert: <Alert message="Error"
-                                   description={result}
-                                   type="error"
-                                   showIcon
-                            />});
+        if (this.props.match.params.itemID){
+            this.setState({sendingForm: true});
+            axios.get(`http://127.0.0.1:8888/transactions/?scantrust_id=` + this.props.match.params.itemID)
+              .then(res => {
+                  this.props.form.setFields({
+                      itemID: {
+                        value: res.data.data[0].scantrust_id,
+                        errors: [],
+                      },
+                      itemName: {
+                        value: res.data.data[0].item_name,
+                        errors: [],
+                      },
+                     itemInfo: {
+                        value: res.data.data[0].item_info,
+                        errors: [],
+                      },
+                      itemColor: {
+                        value: res.data.data[0].item_color,
+                        errors: [],
+                      },
+                      itemSize: {
+                        value: res.data.data[0].item_size,
+                        errors: [],
+                      },
+                      imageURL: {
+                        value: res.data.data[0].item_img,
+                        errors: [],
+                      },
+                  });
+              })
+        }else {
+            axios.get(`http://127.0.0.1:8888/transactions/?scantrust_id=` + this.props.match.params.itemID)
+              .then(res => {
+                  this.props.form.setFields({
+                      receiver: {
+                          value: this.state.public_key,
+                          errors: [],
+                      },
+                  })})
+        }
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                values.public_key = this.props.cookies.get('public_key');
+                values.private_key = this.props.cookies.get('private_key');
+                axios.post(`http://127.0.0.1:8888/transfer/`, { values })
+                      .then(res => {
+                      })
             }
-
-          });
+        });
     };
 
-    generateKeyPair = (e) => {
-        e.preventDefault();
-        axios.get(`http://127.0.0.1:8888/generator/`)
-          .then(res => {
-            const key_pair = res.data;
-            this.setState({ private_key: key_pair.private_key,  public_key: key_pair.public_key });
-          });
-    };
-
-    updatePrivateKey = (e) => {
-        e.preventDefault();
-        this.setState({private_key: e.target.value});
-    };
-
-    updatePublicKey = (e) => {
-        e.preventDefault();
-        this.setState({public_key: e.target.value});
-    };
 
 
     render() {
+        const { getFieldDecorator } = this.props.form;
+        console.log(this.props.form);
         const formItemLayout = {
             labelCol: {
             xs: { span: 24 },
@@ -82,20 +91,103 @@ class TransferForm extends Component {
           },
         };
         if (this.props.cookies.get('public_key') && this.props.cookies.get('private_key')){
-            return (
-                <div className='homepage'>
+                return (
+                    <div className='homepage'>
                     <Row>
                         <Col span={18} offset={3}>
-                            {this.state.alert}
                             <p/>
                             <Form onSubmit={this.handleSubmit}>
-                                <Form.Item {...formItemLayout} label="Scantrust ID"><Input /></Form.Item>
-                                <Form.Item {...formItemLayout} label="Name"><Input /></Form.Item>
-                                <Form.Item {...formItemLayout} label="Info"><Input /></Form.Item>
-                                <Form.Item {...formItemLayout} label="Color"><Input /></Form.Item>
-                                <Form.Item {...formItemLayout} label="Size"><Input /></Form.Item>
-                                <Form.Item {...formItemLayout} label="Image URL"><Input /></Form.Item>
-                                <Form.Item {...formItemLayout} label="Receiver"><Input /></Form.Item>
+                                <Form.Item {...formItemLayout} label="Scantrust ID">
+                                  {getFieldDecorator('itemID', {
+                                    rules: [{
+                                      required: true,
+                                      message: 'Please input item ScanTrust ID',
+                                    }],
+                                  })(
+                                    <Input
+                                        placeholder="Please input item ScanTrust ID"
+                                        disabled={this.state.sendingForm}
+                                    />
+                                  )}
+                                </Form.Item>
+                                <Form.Item {...formItemLayout} label="Name">
+                                  {getFieldDecorator('itemName', {
+                                    rules: [{
+                                      required: true,
+                                      message: 'Please input item name',
+                                    }],
+                                  })(
+                                    <Input
+                                        placeholder="Please input item name"
+                                        disabled={this.state.sendingForm}
+                                    />
+                                  )}
+                                </Form.Item>
+                                <Form.Item {...formItemLayout} label="Color">
+                                  {getFieldDecorator('itemColor', {
+                                    rules: [{
+                                      required: true,
+                                      message: 'Please input item color',
+                                    }],
+                                  })(
+                                    <Input
+                                        placeholder="Please input item color"
+                                        disabled={this.state.sendingForm}
+                                    />
+                                  )}
+                                </Form.Item>
+                                <Form.Item {...formItemLayout} label="Info">
+                                  {getFieldDecorator('itemInfo', {
+                                    rules: [{
+                                      required: true,
+                                      message: 'Please input item info',
+                                    }],
+                                  })(
+                                    <Input
+                                        placeholder="Please input item info"
+                                        disabled={this.state.sendingForm}
+                                    />
+                                  )}
+                                </Form.Item>
+                                <Form.Item {...formItemLayout} label="Size">
+                                  {getFieldDecorator('itemSize', {
+                                    rules: [{
+                                      required: true,
+                                      message: 'Please input item size',
+                                    }],
+                                  })(
+                                    <Input
+                                        placeholder="Please input item size"
+                                        disabled={this.state.sendingForm}
+                                    />
+                                  )}
+                                </Form.Item>
+                                <Form.Item {...formItemLayout} label="Image URL">
+                                  {getFieldDecorator('imageURL', {
+                                    rules: [{
+                                      required: true,
+                                      message: 'Please input item image URL',
+                                    }],
+                                  })(
+                                    <Input
+                                        placeholder="Please input item image URL"
+                                        disabled={this.state.sendingForm}
+                                    />
+                                  )}
+                                </Form.Item>
+                                <Form.Item {...formItemLayout} label="Receiver">
+                                  {getFieldDecorator('receiver', {
+                                    rules: [{
+                                      required: true,
+                                      message: 'Please input item receiver',
+                                    }],
+                                  })(
+                                    <Input
+                                        placeholder="Please input item receiver"
+                                        disabled={!this.state.sendingForm}
+                                    />
+                                  )}
+                                </Form.Item>
                                 <Form.Item {...formItemLayout}>
                                     <Button type="primary" htmlType="submit">Create</Button>
                                 </Form.Item>
@@ -110,4 +202,7 @@ class TransferForm extends Component {
     };
 }
 
-export default TransferForm;
+const WrappedApp = Form.create({})(TransferForm);
+
+
+export default WrappedApp;

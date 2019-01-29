@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.views import View
+import urllib
 import requests
 import json
 import hashlib
@@ -12,6 +13,7 @@ from sawtooth_sdk.protobuf.batch_pb2 import BatchHeader
 from sawtooth_sdk.protobuf.batch_pb2 import Batch
 
 FASHION_NAMESPACE = hashlib.sha512('fashion'.encode("utf-8")).hexdigest()[0:6]
+ITEM_IMG_TIMEOUT = 1.0
 
 
 def sign(message, private_key_hex):
@@ -19,7 +21,7 @@ def sign(message, private_key_hex):
     signature = private_key.ecdsa_sign(message)
     signature = private_key.ecdsa_serialize_compact(signature).hex()
 
-    return signature.hex()
+    return signature
 
 
 def sha512(data):
@@ -47,21 +49,23 @@ def create_batch_list(transactions, private_key_hex, public_key_hex):
     return BatchList(batches=[batch])
 
 
-class GeneratorView(View):
+class TransferView(View):
     def post(self, request):
-        url = 'http://127.0.0.1:4001'
+        url = 'http://rest-api-0:8008/batches'
+        values = json.loads(request.body)['values']
 
-        scantrust_id = request.POST['scantrust_id']
-        owner = request.POST['owner']
-        item_name = request.POST['item_name']
-        item_info = request.POST['item_info']
-        item_color = request.POST['item_color']
-        item_size = request.POST['item_size']
-        item_img = request.POST['item_img']
-        item_img_md5 = request.POST['item_img_md5']
+        scantrust_id = values['itemID']
+        owner = values['receiver']
+        item_name = values['itemName']
+        item_info = values['itemInfo']
+        item_color = values['itemColor']
+        item_size = values['itemSize']
+        item_img = values['imageURL']
+        public_key_hex = values['public_key']
+        private_key_hex = values['private_key']
 
-        public_key_hex = request.POST['public_key']
-        private_key_hex = request.POST['private_key']
+        img = urllib.request.urlopen(item_img, timeout=ITEM_IMG_TIMEOUT).read()
+        item_img_md5 = hashlib.md5(img).hexdigest()
 
         payload = json.dumps(
             (scantrust_id, owner, item_name, item_info, item_color, item_size, item_img, item_img_md5)
@@ -97,6 +101,7 @@ class GeneratorView(View):
         try:
             result = requests.post(url, headers=headers, data=data)
             response = result.text
+            print(response)
         except requests.ConnectionError:
             response = 'Connection fail'
         except BaseException:

@@ -6,15 +6,7 @@ import { Card, Row, Col, Timeline, Table } from 'antd';
 
 class HomePage extends Component {
     componentDidMount() {
-        console.log(this.props.cookies)
-    // axios.get(`http://127.0.0.1:8888/transactions/`)
-    //   .then(res => {
-    //     const transactions = res.data.data.map(
-    //         (transaction) => addShortValues(transaction)
-    //     );
-    //     this.setState({ transactions: transactions });
-    //     console.log(this.state.transactions)
-    //   })
+        console.log(this.props.cookies);
     }
 
     render() {

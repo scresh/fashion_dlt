@@ -15,7 +15,7 @@ class BaseRouter extends React.Component {
         <Route exact path='/transactions' component={TransactionList} />
         <Route exact path='/items/:itemID' component={ItemDetails} />
         <Route exact path='/users/:userID' render={(props) => <UserDetails {...props} cookies={this.props.cookies} />}/>
-
+        <Route exact path='/account' render={(props) => <UserDetails {...props} cookies={this.props.cookies} />}/>
         <Route exact path='/transfer/:itemID?' render={(props) => <TransferForm {...props} cookies={this.props.cookies} />}/>
         <Route exact path='/login' render={(props) => <LoginForm {...props} cookies={this.props.cookies} />}/>
         <Route exact path='/logout' render={(props) => <LogoutPage {...props} cookies={this.props.cookies} />}/>
