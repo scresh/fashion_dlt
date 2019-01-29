@@ -89,7 +89,6 @@ class LoginForm extends Component {
                                   <Button type="primary"  className="login-form-button" onClick={this.validateKeyPair}>
                                     Login
                                   </Button>
-                                    <a> </a>
                                   <Button type="primary"  className="login-form-button" onClick={this.generateKeyPair}>
                                     Generate
                                   </Button>

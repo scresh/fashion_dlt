@@ -1,7 +1,6 @@
 import 'antd/dist/antd.css';
-import axios from 'axios';
 import React, {Component} from 'react';
-import { Card, Row, Col, Timeline, Table } from 'antd';
+import { Card, Row, Col } from 'antd';
 
 
 class HomePage extends Component {

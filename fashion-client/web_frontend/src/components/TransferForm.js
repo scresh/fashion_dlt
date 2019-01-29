@@ -6,12 +6,9 @@ import {Redirect} from "react-router-dom";
 import './Form.css'
 
 class TransferForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state ={
-            sendingForm: false,
-        }
-    }
+    state ={
+        sendingForm: false,
+    };
 
     componentDidMount(){
         this.state = {
