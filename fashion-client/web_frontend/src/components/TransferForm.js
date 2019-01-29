@@ -11,10 +11,10 @@ class TransferForm extends Component {
     };
 
     componentDidMount(){
-        this.state = {
+        this.setState({
                 public_key: this.props.cookies.get('public_key'),
                 private_key: this.props.cookies.get('private_key'),
-        };
+        });
 
         if (this.props.match.params.itemID){
             this.setState({sendingForm: true});
