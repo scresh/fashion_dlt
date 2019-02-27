@@ -30,3 +30,5 @@ npm start
 ## Screenshots
 
 ![](https://raw.githubusercontent.com/scresh/fashion_dlt/master/images/item-details.png)
+![](https://raw.githubusercontent.com/scresh/fashion_dlt/master/images/user-details.png)
+
