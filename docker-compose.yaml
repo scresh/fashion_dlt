@@ -11,12 +11,9 @@ services:
     container_name: fashion-client
     ports:
     - "3000:3000"
+    - "8888:8888"
     entrypoint: "bash -c \"\
         sawtooth keygen && \
-        cd /root/web_backend/ && \
-        nohup python3 manage.py runserver 127.0.0.1:8888 && \
-        cd /root/web_frontend/ && \
-        npm run start && \
         tail -f /dev/null \
         \""
 

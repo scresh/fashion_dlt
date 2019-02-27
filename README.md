@@ -5,6 +5,28 @@ Every registered change of a product owner is stored in the distributed ledger, 
 
 ## Usage
 
+Execute start script to run network nodes:
 ```bash
 ./start.sh
 ```
+
+Connect to client node
+```bash
+docker exec -it fashion-client /bin/bash
+```
+
+Start web backend:
+```bash
+cd /root/web_backend/
+python3 manage.py runserver 127.0.0.1:8888
+```
+
+Start web frontend:
+```bash
+cd /root/web_frontend/
+npm start
+```
+
+## Screenshots
+
+![](https://raw.githubusercontent.com/scresh/fashion_dlt/master/images/item-details.png)
