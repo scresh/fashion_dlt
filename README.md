@@ -7,7 +7,7 @@
 
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/scresh/fashion_dlt/master/images/fashion_dlt.png" alt="Logo" width="96" height="96">
+    <img src="https://raw.githubusercontent.com/scresh/fashion_dlt/master/images/fashion_dlt.png" alt="Logo" width="128" height="128">
 
   <h3 align="center">Fashion DLT</h3>
 
@@ -18,13 +18,9 @@
 
 ## About The Project
 
-Implementation of blockchain based Distributed Ledger Technology system for storing unique product's data, on the example of exclusive clothing brands garments. 
+Implementation of blockchain based Distributed Ledger Technology system for storing unique product's data, on the example of exclusive clothing brands garments. In the created system the physical identification of products can be achieved using special copy-proof ScanTrust QR codes embedded in clothes labels.
 
-In the created system the physical identification of products can be achieved using special copy-proof ScanTrust QR codes embedded in clothes labels.
-
-Every registered change of a product owner is stored in the distributed ledger, consisting of fashion companies, shops, and consumers.
-
-This solution gives many opportunities such as checking product authenticity, its owners history as well as protecting buyers from purchasing stolen products.
+Every registered change of a product owner is stored in the distributed ledger, consisting of fashion companies, shops, and consumers.This solution gives many opportunities such as checking product authenticity, its owners history as well as protecting buyers from purchasing stolen products.
 
 
 
