@@ -26,7 +26,7 @@ Every registered change of a product owner is stored in the distributed ledger, 
 
 ## Usage
 
-Execute start script to run network nodes:
+Execute the start script to install all dependencies and run network nodes:
 ```bash
 ./start.sh
 ```
@@ -39,13 +39,13 @@ docker exec -it fashion-client /bin/bash
 Start web backend:
 ```bash
 cd /root/web_backend/
-python3 manage.py runserver 127.0.0.1:8888
+nohup python3 manage.py runserver 0.0.0.0:8888 &
 ```
 
 Start web frontend:
 ```bash
 cd /root/web_frontend/
-npm start
+nohup npm start &
 ```
 
 ## Screenshots
